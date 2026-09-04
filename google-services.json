@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1023501778868",
+    "project_id": "jbs-agri-hub",
+    "storage_bucket": "jbs-agri-hub.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023501778868:android:77c783d65801daf0ccfce1",
+        "android_client_info": {
+          "package_name": "com.bala44933team.jbsagrihub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmLFGdMKQxtR-w1xF8XZJmuLFSId3fuJg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

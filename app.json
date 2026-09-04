@@ -7,9 +7,11 @@
     "icon": "./assets/images/icon.png",
     "scheme": "jbsagrihub",
     "userInterfaceStyle": "automatic",
+
     "ios": {
       "icon": "./assets/expo.icon"
     },
+
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -18,12 +20,15 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.bala43493steam.jbsagrihub"
+      "package": "com.bala44933team.jbsagrihub",
+      "googleServicesFile": "./google-services.json"
     },
+
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
+
     "plugins": [
       "expo-router",
       [
@@ -33,18 +38,23 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
-      ]
+      ],
+      "expo-font",
+      "expo-web-browser"
     ],
+
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
+
     "extra": {
       "router": {},
       "eas": {
         "projectId": "2396206a-481e-49f6-8b2e-943020b8e124"
       }
     },
+
     "owner": "bala43493s-team"
   }
 }
