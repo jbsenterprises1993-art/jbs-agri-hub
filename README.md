@@ -1,56 +1,89 @@
-# Welcome to your Expo app 👋
+# JBS Agri Hub
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+JBS Agri Hub is the JBS Enterprises customer-facing Expo React Native application.
 
-## Get started
+## Stack
 
-1. Install dependencies
+- Expo SDK 54
+- Expo Router
+- React Native 0.81
+- TypeScript
+- Firebase Authentication
+- Firestore REST bridge
+- AsyncStorage for local order/inventory/billing persistence
+- EAS Build for production Android artifacts
 
-   ```bash
-   npm install
-   ```
+## Development
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Install dependencies:
 
 ```bash
-npm run reset-project
+npm ci
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Start the project:
 
-### Other setup steps
+```npm
+npm start
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Run the automated release regression:
 
-## Learn more
+```bash
+npm run test:regression
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Run the TypeScript check:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npx tsc --noEmit
+```
 
-## Join the community
+## Android production configuration
 
-Join our community of developers creating universal apps.
+- Android application ID: `com.bala44933team.jbsagrihub`
+- Firebase configuration: `google-services.json`
+- EAS project is configured in `app.json`
+- Production EAS profile uses remote app-versioning with auto-increment
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The repository preflight validates these release settings before CI can pass.
+
+## Production build
+
+A production Android App Bundle is intended to be built with the configured EAS production profile:
+
+```bash
+npx eas build --platform android --profile production
+```
+
+This is a paid/consumptive build action depending on the account's EAS allowance. Do not trigger it automatically from CI.
+
+After a production AAB is available, install the corresponding release build on a real Android device and execute the runtime release matrix in `docs/2-day-final-launch-sprint.md`.
+
+## Release gates
+
+The following must be evidenced before calling the app production-ready:
+
+- TypeScript check passes.
+- Automated regression suite passes.
+- Real Android customer flow passes.
+- Firebase two-account authorization test passes.
+- Inventory sale is applied exactly once.
+- Production AAB installs and critical flow passes.
+- Remaining integrations are either configured and tested or explicitly kept disabled.
+
+### Current intentionally disabled/unverified integrations
+
+- UPI/payment gateway
+- Live transport tracking
+- Social publishing APIs
+- AI model/voice provider integration
+- Native PDF runtime generation
+
+These must not be represented as production-enabled features until their provider/runtime validation is complete.
+
+## Project documentation
+
+- `docs/2-day-final-launch-sprint.md` — final launch execution plan
+- `docs/day-10-release-readiness.md` — release gates and blockers
+- `docs/jbs-ecosystem.json` — ecosystem source of truth
