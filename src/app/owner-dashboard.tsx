@@ -50,7 +50,7 @@ export default function OwnerDashboardScreen() {
   const confirmed = orders.filter((order) => order.status !== "Delivered").length;
   const delivered = orders.filter((order) => order.status === "Delivered").length;
   const revenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
-  const report = buildBusinessMetric(orders, "daily", new Date().toISOString().slice(0, 10), new Date().toISOString().slice(0, 10));
+  const report = buildBusinessMetric(orders, "daily", new Date().toISOString().slice(0, 10), new Date().toISOString().slice(0, 10), inventory);
   const lowStockCount = inventory.filter(isLowStock).length;
   const totalStockUnits = inventory.reduce((sum, item) => sum + Math.max(0, Number(item.quantity || 0)), 0);
   const stockValue = inventory.reduce(
@@ -85,6 +85,7 @@ export default function OwnerDashboardScreen() {
               <Metric label="Delivered" value={String(delivered)} />
               <Metric label="Order Value" value={`₹${revenue.toLocaleString("en-IN")}`} />
               <Metric label="Sales KPI" value={`₹${report.sales.toLocaleString("en-IN")}`} />
+              <Metric label="Gross Margin" value={`₹${report.grossProfit.toLocaleString("en-IN")}`} />
               <Metric label="Low Stock" value={String(lowStockCount)} />
               <Metric label="Stock Units" value={String(totalStockUnits)} />
               <Metric label="Stock Value" value={`₹${stockValue.toLocaleString("en-IN")}`} />
