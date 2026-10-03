@@ -8,6 +8,8 @@ Reviewed: 2026-10-04
 - Firestore customer ownership/admin-claim rules are source-validated.
 - Customer smoke-flow contract checks exist.
 - Order completion is connected to deterministic, idempotent local inventory sales.
+- Local inventory sale commits are serialized to reduce concurrent order race conditions.
+- Order-success UI now distinguishes saving/saved/failed states and avoids false success messaging.
 - Billing invoices persist locally with sequential monthly invoice numbers.
 - GST/CGST/SGST calculations are rounded and bounded.
 - Owner reporting exposes inventory-backed gross margin instead of treating sales as net profit.
