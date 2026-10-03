@@ -15,6 +15,17 @@ export type JbsApp = {
 
 export const JBS_ECOSYSTEM: JbsApp[] = [
   {
+    id: "inventory",
+    name: "JBS Inventory",
+    tamil: "Stock Control",
+    tasks: [
+      { id: "stock", name: "Local stock control", status: "completed" },
+      { id: "low-stock", name: "Low-stock monitoring", status: "completed" },
+      { id: "cloud", name: "Cloud inventory sync", status: "planned" }
+    ]
+  },
+  
+  {
     id: "agri-hub",
     name: "JBS Agri Hub",
     tamil: "வாடிக்கையாளர் App",
