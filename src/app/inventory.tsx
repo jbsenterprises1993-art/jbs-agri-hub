@@ -40,18 +40,24 @@ export default function InventoryScreen() {
   );
 
   const updateQty = async (id: string, delta: number) => {
-    const next = items.map(item => item.productId === id
-      ? { ...item, quantity: Math.max(0, item.quantity + delta) }
-      : item);
+    const item = items.find(entry => entry.productId === id);
+    if (!item) return;
+
+    const nextQuantity = Math.max(0, item.quantity + delta);
+    const actualDelta = nextQuantity - item.quantity;
+    const next = items.map(entry => entry.productId === id
+      ? { ...entry, quantity: nextQuantity }
+      : entry);
+
     setItems(next);
     await saveInventory(next);
-    const item = items.find(entry => entry.productId === id);
-    if (item) {
+
+    if (actualDelta !== 0) {
       await recordStockMovement({
-        id: `${id}-${Date.now()}`,
+        id: id + '-' + Date.now(),
         productId: id,
-        type: delta > 0 ? "purchase" : "sale",
-        quantity: Math.abs(delta),
+        type: actualDelta > 0 ? 'purchase' : 'sale',
+        quantity: Math.abs(actualDelta),
         unitRate: item.purchaseRate,
         createdAt: new Date().toISOString(),
       });
