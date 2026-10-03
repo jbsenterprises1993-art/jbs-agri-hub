@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "sourceOfTruth": "JBS Full App Ecosystem",
-  "lastReviewed": "2026-10-03",
+  "lastReviewed": "2026-10-04",
   "apps": [
     {"id":"agri-hub","name":"JBS Agri Hub","repoSource":"jbs-agri-hub","status":"active-source"},
     {"id":"owner","name":"JBS Owner Hub","status":"prototype"},
@@ -11,7 +11,8 @@
     {"id":"attendance","name":"JBS Attendance & Salary","status":"foundation"},
     {"id":"marketing","name":"JBS Marketing","status":"foundation"},
     {"id":"delivery","name":"JBS Delivery","status":"foundation"},
-    {"id":"ai","name":"JBS AI Assistant","status":"foundation"}
+    {"id":"ai","name":"JBS AI Assistant","status":"foundation"},
+    {"id":"inventory","name":"JBS Inventory","status":"foundation"}
   ],
   "sharedContracts": [
     "customer-types",
