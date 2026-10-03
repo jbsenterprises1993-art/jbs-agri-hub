@@ -88,6 +88,10 @@ export default function PaymentScreen() {
             ? params.address
             : "",
         paymentStatus: "cod",
+        items:
+          typeof params.items === "string"
+            ? params.items
+            : "[]",
       },
     });
   };
