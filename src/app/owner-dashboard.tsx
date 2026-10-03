@@ -13,6 +13,8 @@ import type { Order } from "@/data/order-types";
 import { getOrders } from "@/services/orders";
 import { subscribeToCloudOrders } from "@/services/cloud-orders";
 import { buildBusinessMetric } from "@/services/business-reports";
+import { isLowStock } from "@/services/inventory";
+import type { InventoryItem } from "@/data/inventory-types";
 
 export default function OwnerDashboardScreen() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -43,6 +45,8 @@ export default function OwnerDashboardScreen() {
   const delivered = orders.filter((order) => order.status === "Delivered").length;
   const revenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
   const report = buildBusinessMetric(orders, "daily", new Date().toISOString().slice(0, 10), new Date().toISOString().slice(0, 10));
+  const inventoryPreview: InventoryItem[] = [];
+  const lowStockCount = inventoryPreview.filter(isLowStock).length;
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -70,6 +74,7 @@ export default function OwnerDashboardScreen() {
               <Metric label="Delivered" value={String(delivered)} />
               <Metric label="Order Value" value={`₹${revenue.toLocaleString("en-IN")}`} />
               <Metric label="Sales KPI" value={`₹${report.sales.toLocaleString("en-IN")}`} />
+              <Metric label="Low Stock" value={String(lowStockCount)} />
             </View>
 
             <View style={styles.card}>
