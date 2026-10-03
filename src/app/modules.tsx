@@ -4,6 +4,7 @@ import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "rea
 import { JBS_ECOSYSTEM } from "@/data/jbs-ecosystem";
 
 const routes: Record<string, string> = {
+  "inventory": "/inventory",
   "agri-hub": "/",
   owner: "/owner-dashboard",
   orchestrator: "/live-progress",
