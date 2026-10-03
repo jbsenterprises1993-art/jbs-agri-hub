@@ -2,6 +2,8 @@ import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import { calculateInvoice } from "@/services/billing";
+import { getInvoices, saveInvoice } from "@/services/billing-storage";
+import { buildInvoiceHtml, nextInvoiceNumber } from "@/services/invoice";
 import type { InvoiceItem } from "@/data/billing-types";
 import { JBS_THEME } from "@/theme/jbs-theme";
 
@@ -11,6 +13,7 @@ export default function BillingScreen() {
   const [gst, setGst] = useState("18");
   const [customerName, setCustomerName] = useState("");
   const [invoiceId, setInvoiceId] = useState("JBS-DEMO-001");
+  const [savedMessage, setSavedMessage] = useState("");
   const gstPercent = Math.min(100, Math.max(0, Number(gst) || 0));
   const item: InvoiceItem = {
     id: "demo",
@@ -20,6 +23,16 @@ export default function BillingScreen() {
     gstPercent,
   };
   const totals = useMemo(() => calculateInvoice([item]), [item.quantity, item.unitPrice, item.gstPercent]);
+
+  const saveCurrentInvoice = async () => {
+    const finalInvoiceId = invoiceId.trim() || await nextInvoiceNumber();
+    const invoice = { invoiceId: finalInvoiceId, customerName: customerName.trim() || "Walk-in Customer", items: [item], ...totals, status: "issued" as const, issuedAt: new Date().toISOString() };
+    await saveInvoice(invoice);
+    setInvoiceId(finalInvoiceId);
+    setSavedMessage(`Saved ${finalInvoiceId}`);
+    void buildInvoiceHtml(invoice);
+    void getInvoices();
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -46,6 +59,9 @@ export default function BillingScreen() {
           <Text style={styles.label}>GST %</Text>
           <TextInput value={gst} onChangeText={setGst} keyboardType="decimal-pad" style={styles.input} />
         </View>
+
+        <Pressable onPress={saveCurrentInvoice} style={styles.saveButton} accessibilityRole="button"><Text style={styles.saveText}>Save Invoice</Text></Pressable>
+        {savedMessage ? <Text style={styles.saved}>{savedMessage}</Text> : null}
 
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Invoice Summary</Text>
@@ -125,5 +141,8 @@ const styles = StyleSheet.create({
   lineLabel: { color: JBS_THEME.colors.textSecondary },
   value: { color: JBS_THEME.colors.text, fontWeight: "800" },
   strong: { color: JBS_THEME.colors.primary, fontWeight: "900" },
+  saveButton: { backgroundColor: JBS_THEME.colors.primary, borderRadius: JBS_THEME.radius.md, padding: 14, alignItems: "center" },
+  saveText: { color: JBS_THEME.colors.background, fontWeight: "900" },
+  saved: { color: JBS_THEME.colors.primarySoft, fontSize: 12, fontWeight: "800", marginTop: 8 },
   warning: { color: JBS_THEME.colors.warning, fontSize: 11, fontWeight: "700", marginTop: JBS_THEME.spacing.md },
 });
