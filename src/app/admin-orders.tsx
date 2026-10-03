@@ -1,6 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
+import type { Order, OrderStatus } from "@/data/order-types";
+import { getOrders, updateOrderStatus as persistOrderStatus } from "@/services/orders";
 import {
   ActivityIndicator,
   Alert,
@@ -11,24 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-type OrderStatus =
-  | "Order Confirmed"
-  | "Order Processing"
-  | "Shipped"
-  | "Delivered";
-
-type Order = {
-  orderId: string;
-  name: string;
-  price: number;
-  quantity: number;
-  total: number;
-  paymentMethod: string;
-  deliveryType: string;
-  date: string;
-  status?: OrderStatus;
-};
 
 const STATUS_OPTIONS: OrderStatus[] = [
   "Order Confirmed",
@@ -58,17 +41,7 @@ export default function AdminOrdersScreen() {
     try {
       setLoading(true);
 
-      const savedOrders =
-        await AsyncStorage.getItem("jbs_orders");
-
-      if (!savedOrders) {
-        setOrders([]);
-        return;
-      }
-
-      const parsedOrders: Order[] =
-        JSON.parse(savedOrders);
-
+      const parsedOrders = await getOrders();
       setOrders(parsedOrders);
     } catch (error) {
       console.log("Admin load error:", error);
@@ -93,27 +66,8 @@ export default function AdminOrdersScreen() {
     try {
       setUpdatingId(orderId);
 
-      const updatedOrders = orders.map(
-        (order) => {
-          if (order.orderId === orderId) {
-            return {
-              ...order,
-              status: newStatus,
-            };
-          }
-
-          return order;
-        }
-      );
-
-      // Screen update
+      const updatedOrders = await persistOrderStatus(orderId, newStatus);
       setOrders(updatedOrders);
-
-      // Save
-      await AsyncStorage.setItem(
-        "jbs_orders",
-        JSON.stringify(updatedOrders)
-      );
 
       Alert.alert(
         "Status Updated",
