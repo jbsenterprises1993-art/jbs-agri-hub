@@ -56,7 +56,7 @@ export default function InventoryScreen() {
         <Pressable onPress={() => router.back()}><Text style={styles.back}>← Back</Text></Pressable>
         <Text style={styles.eyebrow}>JBS INVENTORY</Text>
         <Text style={styles.title}>Stock Control</Text>
-        <Text style={styles.sub}>Local inventory foundation • low-stock limits included</Text>\n        <Text style={styles.summary}>Low stock: {items.filter(isLowStock).length} • Movements: {movements.length}</Text>
+        <Text style={styles.sub}>Local inventory foundation • low-stock limits included</Text>\n        <View style={styles.summaryRow}>\n          <Text style={styles.summary}>Low stock: {lowStockCount} • Movements: {movements.length}</Text>\n          <Pressable onPress={load} accessibilityRole="button"><Text style={styles.reload}>↻ Reload</Text></Pressable>\n        </View>
         {loaded && items.map(item => (
           <View key={item.productId} style={styles.card}>
             <View style={styles.row}>
@@ -85,5 +85,5 @@ const styles = StyleSheet.create({
   row:{flexDirection:"row",alignItems:"center"},name:{color:"#FFF",fontSize:16,fontWeight:"900"},meta:{color:"#8EAE99",fontSize:11,marginTop:4},
   qty:{color:"#6ED99A",fontSize:28,fontWeight:"900"},low:{color:"#FFD166"},controls:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginTop:14},
   button:{width:42,height:38,borderRadius:12,backgroundColor:"#18352A",alignItems:"center",justifyContent:"center"},buttonText:{color:"#FFF",fontSize:22,fontWeight:"900"},
-  limit:{color:"#9BC7A9",fontSize:11},summary:{color:"#6ED99A",fontSize:12,fontWeight:"800",marginBottom:14},note:{color:"#718D7B",fontSize:11,lineHeight:17,marginTop:8}
+  limit:{color:"#9BC7A9",fontSize:11},summaryRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:14},summary:{color:"#6ED99A",fontSize:12,fontWeight:"800"},reload:{color:"#FFFFFF",fontSize:12,fontWeight:"800"},note:{color:"#718D7B",fontSize:11,lineHeight:17,marginTop:8}
 });
