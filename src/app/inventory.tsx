@@ -125,6 +125,7 @@ export default function InventoryScreen() {
   );
 }
 const styles = StyleSheet.create({
+  sectionTitle:{color:"#FFF",fontSize:16,fontWeight:"900",marginBottom:8},muted:{color:"#8EAE99",fontSize:11},movementRow:{flexDirection:"row",justifyContent:"space-between",alignItems:"center",paddingVertical:10,borderTopWidth:1,borderTopColor:"#1D4030"},movementMain:{flex:1,marginRight:12},movementName:{color:"#FFF",fontSize:13,fontWeight:"800"},purchaseQty:{color:"#6ED99A",fontSize:18,fontWeight:"900"},saleQty:{color:"#FFD166",fontSize:18,fontWeight:"900"},
   safe:{flex:1,backgroundColor:"#071A12"},container:{padding:18,paddingBottom:40},back:{color:"#6ED99A",fontSize:17,fontWeight:"800",marginBottom:22},
   eyebrow:{color:"#6ED99A",fontSize:11,fontWeight:"900",letterSpacing:2},title:{color:"#FFF",fontSize:30,fontWeight:"900",marginTop:4},
   sub:{color:"#9BC7A9",fontSize:12,lineHeight:18,marginTop:6,marginBottom:18},card:{backgroundColor:"#102A1D",borderRadius:18,padding:16,marginBottom:12},
