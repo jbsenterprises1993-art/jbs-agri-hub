@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { JBS_ECOSYSTEM } from '@/data/jbs-ecosystem';
+import { buildOrchestratorSummary } from '@/services/orchestrator';
 import {
   Pressable,
   SafeAreaView,
@@ -45,6 +46,7 @@ function moduleProgress(module: AppModule) {
 export default function LiveProgressScreen() {
   const [filter, setFilter] = useState<'all' | Status>('all');
   const modules = initialModules;
+  const orchestratorSummary = buildOrchestratorSummary(modules);
 
   const totals = useMemo(() => {
     const tasks = modules.flatMap((item) => item.tasks);
@@ -85,6 +87,9 @@ export default function LiveProgressScreen() {
             <Text style={styles.heroTitle}>JBS Ecosystem</Text>
             <Text style={styles.heroText}>
               {totals.completed} of {totals.total} tracked tasks completed
+            </Text>
+            <Text style={styles.heroText}>
+              Active: {orchestratorSummary.activeTasks} • Blocked: {orchestratorSummary.blockedTasks}
             </Text>
             <Text style={styles.sync}>Source: JBS ecosystem manifest • reviewed 03 Oct 2026</Text>
           </View>
