@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Order, OrderStatus } from "@/data/order-types";
-import { syncOrderStatusToCloud, syncOrderToCloud } from "@/services/cloud-orders";
+import { getCloudOrderById, syncOrderStatusToCloud, syncOrderToCloud } from "@/services/cloud-orders";
 
 export const ORDERS_STORAGE_KEY = "jbs_orders";
 
@@ -31,7 +31,10 @@ export async function getOrderById(
   orderId: string,
 ): Promise<Order | null> {
   const orders = await getOrders();
-  return orders.find((order) => order.orderId === orderId) ?? null;
+  const localOrder = orders.find((order) => order.orderId === orderId);
+  if (localOrder) return localOrder;
+
+  return getCloudOrderById(orderId);
 }
 
 export async function saveOrder(order: Order): Promise<void> {
