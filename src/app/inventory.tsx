@@ -4,13 +4,9 @@ import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View 
 import type { InventoryItem } from "@/data/inventory-types";
 import { getInventory, saveInventory, getStockMovements, recordStockMovement } from "@/services/inventory-storage";
 import type { StockMovement } from "@/data/inventory-types";
-import { isLowStock } from "@/services/inventory";
+import { ensureInventorySeeded, isLowStock } from "@/services/inventory";
 import { JBS_THEME } from "@/theme/jbs-theme";
 
-const demoItems: InventoryItem[] = [
-  { productId: "sprayer-01", productName: "Petrol Power Sprayer", sku: "JBS-PS-01", quantity: 12, lowStockLimit: 5, highStockLimit: 30, purchaseRate: 9500, gstPercent: 18, active: true },
-  { productId: "weeder-01", productName: "Power Weeder", sku: "JBS-PW-01", quantity: 4, lowStockLimit: 5, highStockLimit: 20, purchaseRate: 42000, gstPercent: 18, active: true },
-];
 
 export default function InventoryScreen() {
   const [items, setItems] = useState<InventoryItem[]>([]);
@@ -22,8 +18,8 @@ export default function InventoryScreen() {
     const stored = await getInventory();
     setMovements(await getStockMovements());
     if (stored.length === 0) {
-      await saveInventory(demoItems);
-      setItems(demoItems);
+      const seeded = await ensureInventorySeeded();
+      setItems(seeded);
     } else {
       setItems(stored);
     }
