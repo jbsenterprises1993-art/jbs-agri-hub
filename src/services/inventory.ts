@@ -69,113 +69,135 @@ export type InventorySaleResult = {
   movements: StockMovement[];
 };
 
+// Keep local sale commits serialized. AsyncStorage has no transaction primitive,
+// so concurrent order-success screens must not read the same stock snapshot
+// and both decrement it.
+let inventorySaleQueue: Promise<void> = Promise.resolve();
+
+function enqueueInventorySale<T>(operation: () => Promise<T>): Promise<T> {
+  const run = inventorySaleQueue.then(operation, operation);
+  inventorySaleQueue = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
+}
+
 /**
  * Applies an order as one deterministic stock sale.
  *
  * The orderId/productId pair is used as an idempotency key, so retrying the
  * same order cannot decrement stock twice. All stock levels are validated
- * before the inventory snapshot is committed.
+ * before the inventory snapshot is committed. Local sale commits are
+ * serialized to avoid lost-update races between concurrent order completions.
  */
-export async function applyOrderSale(
+export function applyOrderSale(
   order: Order,
 ): Promise<InventorySaleResult> {
-  const inventory = await ensureInventorySeeded();
-  const existingMovements = await getStockMovements();
-
-  const sourceItems =
-    order.items && order.items.length > 0
-      ? order.items
-      : [
-          {
-            id: order.name.toLowerCase().replace(/\s+/g, "-"),
-            name: order.name,
-            price: order.price,
-            quantity: order.quantity,
-          },
-        ];
-
-  const quantities = new Map<string, number>();
-
-  for (const item of sourceItems) {
-    const productId = String(item.id || "").trim();
-    const quantity = Math.floor(Number(item.quantity));
-
-    if (!productId || !Number.isFinite(quantity) || quantity <= 0) {
-      throw new Error("Order contains an invalid inventory item.");
+  return enqueueInventorySale(async () => {
+    const normalizedOrderId = String(order.orderId || "").trim();
+    if (!normalizedOrderId) {
+      throw new Error("Order ID is required for inventory sale.");
     }
 
-    quantities.set(productId, (quantities.get(productId) ?? 0) + quantity);
-  }
+    const inventory = await ensureInventorySeeded();
+    const existingMovements = await getStockMovements();
 
-  const movementKey = (productId: string) =>
-    `sale:${order.orderId}:${productId}`;
+    const sourceItems =
+      order.items && order.items.length > 0
+        ? order.items
+        : [
+            {
+              id: order.name.toLowerCase().replace(/\s+/g, "-"),
+              name: order.name,
+              price: order.price,
+              quantity: order.quantity,
+            },
+          ];
 
-  const existingKeys = new Set(
-    existingMovements
-      .filter((movement) => movement.type === "sale" && movement.referenceId)
-      .map((movement) => movement.referenceId as string),
-  );
+    const quantities = new Map<string, number>();
 
-  const pending = Array.from(quantities.entries()).filter(
-    ([productId]) => !existingKeys.has(movementKey(productId)),
-  );
+    for (const item of sourceItems) {
+      const productId = String(item.id || "").trim();
+      const quantity = Math.floor(Number(item.quantity));
 
-  if (pending.length === 0) {
-    return { applied: false, movements: [] };
-  }
+      if (!productId || !Number.isFinite(quantity) || quantity <= 0) {
+        throw new Error("Order contains an invalid inventory item.");
+      }
 
-  const inventoryById = new Map(
-    inventory.map((item) => [item.productId, item]),
-  );
-
-  for (const [productId, quantity] of pending) {
-    const item = inventoryById.get(productId);
-
-    if (!item) {
-      throw new Error(`Inventory item not found: ${productId}`);
+      quantities.set(productId, (quantities.get(productId) ?? 0) + quantity);
     }
 
-    if (!Number.isFinite(item.quantity) || item.quantity < quantity) {
-      throw new Error(
-        `Insufficient stock for ${item.productName}. Available: ${item.quantity}, requested: ${quantity}.`,
-      );
-    }
-  }
+    const movementKey = (productId: string) =>
+      `sale:${normalizedOrderId}:${productId}`;
 
-  const now = new Date().toISOString();
-  const movements: StockMovement[] = pending.map(
-    ([productId, quantity]) => {
-      const item = inventoryById.get(productId)!;
+    const existingKeys = new Set(
+      existingMovements
+        .filter((movement) => movement.type === "sale" && movement.referenceId)
+        .map((movement) => movement.referenceId as string),
+    );
+
+    const pending = Array.from(quantities.entries()).filter(
+      ([productId]) => !existingKeys.has(movementKey(productId)),
+    );
+
+    if (pending.length === 0) {
+      return { applied: false, movements: [] };
+    }
+
+    const inventoryById = new Map(
+      inventory.map((item) => [item.productId, item]),
+    );
+
+    for (const [productId, quantity] of pending) {
+      const item = inventoryById.get(productId);
+
+      if (!item) {
+        throw new Error(`Inventory item not found: ${productId}`);
+      }
+
+      if (!Number.isFinite(item.quantity) || item.quantity < quantity) {
+        throw new Error(
+          `Insufficient stock for ${item.productName}. Available: ${item.quantity}, requested: ${quantity}.`,
+        );
+      }
+    }
+
+    const now = new Date().toISOString();
+    const movements: StockMovement[] = pending.map(
+      ([productId, quantity]) => {
+        const item = inventoryById.get(productId)!;
+
+        return {
+          id: `${movementKey(productId)}:${now}`,
+          productId,
+          type: "sale",
+          quantity,
+          unitRate: item.purchaseRate,
+          referenceId: movementKey(productId),
+          createdAt: now,
+        };
+      },
+    );
+
+    const updatedInventory = inventory.map((item) => {
+      const quantity = quantities.get(item.productId);
+
+      if (!quantity || existingKeys.has(movementKey(item.productId))) {
+        return item;
+      }
 
       return {
-        id: `${movementKey(productId)}:${now}`,
-        productId,
-        type: "sale",
-        quantity,
-        unitRate: item.purchaseRate,
-        referenceId: movementKey(productId),
-        createdAt: now,
+        ...item,
+        quantity: item.quantity - quantity,
       };
-    },
-  );
+    });
 
-  const updatedInventory = inventory.map((item) => {
-    const quantity = quantities.get(item.productId);
+    await commitInventoryAndMovements(
+      updatedInventory,
+      [...movements, ...existingMovements],
+    );
 
-    if (!quantity || existingKeys.has(movementKey(item.productId))) {
-      return item;
-    }
-
-    return {
-      ...item,
-      quantity: item.quantity - quantity,
-    };
+    return { applied: true, movements };
   });
-
-  await commitInventoryAndMovements(
-    updatedInventory,
-    [...movements, ...existingMovements],
-  );
-
-  return { applied: true, movements };
 }
