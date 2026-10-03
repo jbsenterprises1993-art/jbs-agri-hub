@@ -7,6 +7,6 @@ export function updateDeliveryStatus(
   return {
     ...delivery,
     deliveryStatus: status,
-    deliveredAt: status === "delivered" ? new Date().toISOString() : delivery.deliveredAt,
+    deliveredAt: status === "delivered" ? new Date().toISOString() : undefined,
   };
 }
