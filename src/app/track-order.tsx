@@ -12,12 +12,6 @@ import {
     View,
 } from "react-native";
 
-type OrderStatus =
-  | "Order Confirmed"
-  | "Order Processing"
-  | "Shipped"
-  | "Delivered";
-
 type Step = {
   title: OrderStatus;
   description: string;
