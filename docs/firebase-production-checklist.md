@@ -1,21 +1,108 @@
-# JBS Firebase Production Checklist
+import {
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
+import { db, auth } from "@/firebaseConfig";
+import type { Order, OrderStatus } from "@/data/order-types";
 
-## Completed in source
-- Firebase Auth and Firestore are configured in the app.
-- Orders can sync to Firestore after authentication.
-- Tracking can fall back to a cloud order lookup.
-- Owner Dashboard can subscribe to real-time Firestore orders.
-- Firestore rules require authentication for customer orders.
-- Firestore admin-wide access requires the custom admin auth claim.
+const ORDERS_COLLECTION = "orders";
 
-## Required before production release
-1. Deploy firestore.rules to the JBS Firebase project.
-2. Create the intended owner/admin account and set its Firebase custom claim to admin: true using a trusted server/Admin SDK process.
-3. Test customer isolation: one customer must not read another customer's order.
-4. Test owner/admin access to the complete order list.
-5. Test order creation, status changes and tracking on two devices.
-6. Confirm Firebase Phone Authentication and OTP behavior in the release build.
-7. Confirm Firebase indexes/rules in the Firebase console if additional query patterns are introduced.
-8. Only after payment-provider integration is implemented and server-side verified should UPI be enabled.
+function toFirestoreOrder(order: Order) {
+  return {
+    ...order,
+    userId: auth.currentUser?.uid ?? null,
+    updatedAt: serverTimestamp(),
+  };
+}
 
-The app must not treat a failed cloud sync as proof that an order was cloud-persisted.
+export async function syncOrderToCloud(order: Order): Promise<boolean> {
+  if (!auth.currentUser) return false;
+
+  try {
+    await setDoc(
+      doc(db, ORDERS_COLLECTION, order.orderId),
+      toFirestoreOrder(order),
+      { merge: true },
+    );
+    return true;
+  } catch (error) {
+    console.log("Cloud order sync skipped:", error);
+    return false;
+  }
+}
+
+export async function getCloudOrderById(
+  orderId: string,
+): Promise<Order | null> {
+  if (!auth.currentUser) return null;
+
+  try {
+    const snapshot = await getDoc(doc(db, ORDERS_COLLECTION, orderId));
+    if (!snapshot.exists()) return null;
+
+    const data = snapshot.data();
+    return {
+      ...(data as Order),
+      orderId: snapshot.id,
+    };
+  } catch (error) {
+    console.log("Cloud order read skipped:", error);
+    return null;
+  }
+}
+
+export async function syncOrderStatusToCloud(
+  orderId: string,
+  status: OrderStatus,
+): Promise<boolean> {
+  if (!auth.currentUser) return false;
+
+  try {
+    await setDoc(
+      doc(db, ORDERS_COLLECTION, orderId),
+      {
+        status,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+    return true;
+  } catch (error) {
+    console.log("Cloud order status sync skipped:", error);
+    return false;
+  }
+}
+
+export function subscribeToCloudOrders(
+  onOrders: (orders: Order[]) => void,
+  onError?: (error: Error) => void,
+) {
+  if (!auth.currentUser) return () => undefined;
+
+  return onSnapshot(
+    collection(db, ORDERS_COLLECTION),
+    (snapshot) => {
+      const orders = snapshot.docs.map((item) => ({
+        ...(item.data() as Order),
+        orderId: item.id,
+      }));
+      onOrders(orders);
+    },
+    (error) => onError?.(error),
+  );
+}
+
+export function ordersCollectionPath() {
+  return collection(db, ORDERS_COLLECTION).path;
+}
+
+
+## Security boundary
+- Customer order reads are scoped by `userId` in Firestore rules.
+- Owner-wide order reads require a trusted Firebase custom claim: `admin: true`.
+- The mobile client must never set its own admin claim or treat a local admin flag as authorization.
+- Payment authorization must remain server-side; COD is the only currently enabled payment path.
