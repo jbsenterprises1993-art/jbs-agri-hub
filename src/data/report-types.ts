@@ -6,6 +6,9 @@ export type BusinessMetric = {
   periodEnd: string;
   sales: number;
   expenses: number;
+  costOfGoods: number;
+  grossProfit: number;
   profit: number;
+  profitKnown: boolean;
   orderCount: number;
 };
