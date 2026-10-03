@@ -15,6 +15,9 @@ const checks = [
   ["delivery order bridge", "src/services/delivery-order.ts", /deliveryToOrderStatus/],
   ["marketing due scheduler", "src/services/marketing-scheduler.ts", /getDueScheduledPosts/],
   ["AI permissions", "src/services/ai-permissions.ts", /canPublishAiResult/],
+  ["inventory idempotency", "src/services/inventory.ts", /sale:\$\{order\.orderId\}:\$\{productId\}/],
+  ["inventory stock guard", "src/services/inventory.ts", /Insufficient stock for/],
+  ["inventory atomic commit", "src/services/inventory.ts", /commitInventoryAndMovements\(/],
   ["release target", "docs/10-day-production-target.md", /Day 10 — Release readiness/],
 ];
 
