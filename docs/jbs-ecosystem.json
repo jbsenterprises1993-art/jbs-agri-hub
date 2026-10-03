@@ -14,19 +14,8 @@
     {"id":"ai","name":"JBS AI Assistant","status":"foundation"},
     {"id":"inventory","name":"JBS Inventory","status":"foundation"}
   ],
-  "sharedContracts": [
-    "customer-types",
-    "inventory-types",
-    "order-types",
-    "billing-types",
-    "accounts-types",
-    "attendance-types",
-    "delivery-types",
-    "marketing-types",
-    "ai-types",
-    "report-types"
-  ],
-  "principles": [
+  "sharedContracts":["customer-types","inventory-types","order-types","billing-types","accounts-types","attendance-types","delivery-types","marketing-types","ai-types","report-types"],
+  "principles":[
     "Reuse the existing Agri Hub source before creating duplicate implementations.",
     "Keep shared authentication, customer, inventory, billing, order and reporting contracts consistent across apps.",
     "Foundation means shared contracts exist; it does not mean the app is production complete.",
