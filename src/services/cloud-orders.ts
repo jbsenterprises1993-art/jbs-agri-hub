@@ -1,47 +1,29 @@
-import {
-  collection,
-  query,
-  where,
-  doc,
-  getDoc,
-  onSnapshot,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore";
-import { db, auth } from "@/firebaseConfig";
-import { getFirebaseAuthReadiness } from "@/services/firebase-readiness";
+import { getAuth } from "@react-native-firebase/auth";
 import type { Order, OrderStatus } from "@/data/order-types";
+import {
+  firestoreOrdersPath,
+  getFirestoreOrder,
+  listFirestoreOrders,
+  queryFirestoreOrdersByUser,
+  saveFirestoreOrder,
+} from "@/services/firestore-rest";
 
-const ORDERS_COLLECTION = "orders";
+const POLL_INTERVAL_MS = 15000;
 
-function logAuthBoundary(operation: string) {
-  const readiness = getFirebaseAuthReadiness();
-  if (readiness.nativeSignedIn && !readiness.cloudSyncReady) {
-    console.log(`Cloud order ${operation} blocked: ${readiness.message}`);
-  }
-}
-
-function toFirestoreOrder(order: Order) {
-  return {
-    ...order,
-    userId: auth.currentUser?.uid ?? null,
-    updatedAt: serverTimestamp(),
-  };
+function currentUser() {
+  return getAuth().currentUser;
 }
 
 export async function syncOrderToCloud(order: Order): Promise<boolean> {
-  if (!auth.currentUser) {
-    logAuthBoundary("sync");
-    return false;
-  }
+  const user = currentUser();
+  if (!user) return false;
 
   try {
-    await setDoc(
-      doc(db, ORDERS_COLLECTION, order.orderId),
-      toFirestoreOrder(order),
-      { merge: true },
-    );
-    return true;
+    return await saveFirestoreOrder(order.orderId, {
+      ...order,
+      userId: user.uid,
+      updatedAt: new Date().toISOString(),
+    });
   } catch (error) {
     console.log("Cloud order sync skipped:", error);
     return false;
@@ -51,20 +33,11 @@ export async function syncOrderToCloud(order: Order): Promise<boolean> {
 export async function getCloudOrderById(
   orderId: string,
 ): Promise<Order | null> {
-  if (!auth.currentUser) {
-    logAuthBoundary("read");
-    return null;
-  }
+  if (!currentUser()) return null;
 
   try {
-    const snapshot = await getDoc(doc(db, ORDERS_COLLECTION, orderId));
-    if (!snapshot.exists()) return null;
-
-    const data = snapshot.data();
-    return {
-      ...(data as Order),
-      orderId: snapshot.id,
-    };
+    const order = await getFirestoreOrder(orderId);
+    return order ? ({ ...order, orderId } as Order) : null;
   } catch (error) {
     console.log("Cloud order read skipped:", error);
     return null;
@@ -75,77 +48,95 @@ export async function syncOrderStatusToCloud(
   orderId: string,
   status: OrderStatus,
 ): Promise<boolean> {
-  if (!auth.currentUser) {
-    logAuthBoundary("status update");
-    return false;
-  }
+  const user = currentUser();
+  if (!user) return false;
 
   try {
-    await setDoc(
-      doc(db, ORDERS_COLLECTION, orderId),
-      {
-        status,
-        updatedAt: serverTimestamp(),
-      },
-      { merge: true },
-    );
-    return true;
+    return await saveFirestoreOrder(orderId, {
+      status,
+      updatedAt: new Date().toISOString(),
+      userId: user.uid,
+    });
   } catch (error) {
     console.log("Cloud order status sync skipped:", error);
     return false;
   }
 }
 
+async function loadCurrentUserOrders(onOrders: (orders: Order[]) => void) {
+  const user = currentUser();
+  if (!user) return;
+
+  try {
+    const rows = await queryFirestoreOrdersByUser(user.uid);
+    onOrders(
+      rows.map((item) => ({
+        ...item,
+        orderId: String(item.orderId ?? ""),
+      })) as Order[],
+    );
+  } catch (error) {
+    console.log("Cloud user-order query skipped:", error);
+  }
+}
+
 export function subscribeToCurrentUserOrders(
   onOrders: (orders: Order[]) => void,
-  onError?: (error: Error) => void,
+  _onError?: (error: Error) => void,
 ) {
-  const userId = auth.currentUser?.uid;
-  if (!userId) {
-    logAuthBoundary("current-user listener");
-    return () => undefined;
+  if (!currentUser()) return () => undefined;
+
+  let active = true;
+  const poll = async () => {
+    if (!active) return;
+    await loadCurrentUserOrders(onOrders);
+  };
+
+  void poll();
+  const timer = setInterval(poll, POLL_INTERVAL_MS);
+
+  return () => {
+    active = false;
+    clearInterval(timer);
+  };
+}
+
+async function loadAdminOrders(onOrders: (orders: Order[]) => void) {
+  try {
+    const rows = await listFirestoreOrders();
+    onOrders(
+      rows.map((item) => ({
+        ...item,
+        orderId: String(item.orderId ?? ""),
+      })) as Order[],
+    );
+  } catch (error) {
+    console.log("Cloud admin-order query skipped:", error);
   }
-
-  const userOrdersQuery = query(
-    collection(db, ORDERS_COLLECTION),
-    where("userId", "==", userId),
-  );
-
-  return onSnapshot(
-    userOrdersQuery,
-    (snapshot) => {
-      const orders = snapshot.docs.map((item) => ({
-        ...(item.data() as Order),
-        orderId: item.id,
-      }));
-      onOrders(orders);
-    },
-    (error) => onError?.(error),
-  );
 }
 
 export function subscribeToCloudOrders(
   onOrders: (orders: Order[]) => void,
-  onError?: (error: Error) => void,
+  _onError?: (error: Error) => void,
 ) {
-  if (!auth.currentUser) {
-    logAuthBoundary("admin listener");
-    return () => undefined;
-  }
+  const user = currentUser();
+  if (!user) return () => undefined;
 
-  return onSnapshot(
-    collection(db, ORDERS_COLLECTION),
-    (snapshot) => {
-      const orders = snapshot.docs.map((item) => ({
-        ...(item.data() as Order),
-        orderId: item.id,
-      }));
-      onOrders(orders);
-    },
-    (error) => onError?.(error),
-  );
+  let active = true;
+  const poll = async () => {
+    if (!active) return;
+    await loadAdminOrders(onOrders);
+  };
+
+  void poll();
+  const timer = setInterval(poll, POLL_INTERVAL_MS);
+
+  return () => {
+    active = false;
+    clearInterval(timer);
+  };
 }
 
 export function ordersCollectionPath() {
-  return collection(db, ORDERS_COLLECTION).path;
+  return firestoreOrdersPath();
 }
