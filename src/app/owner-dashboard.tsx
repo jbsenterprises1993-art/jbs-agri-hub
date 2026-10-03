@@ -107,6 +107,26 @@ export default function OwnerDashboardScreen() {
               )}
             </View>
 
+            <View style={styles.card}>
+              <View style={styles.stockHeader}>
+                <Text style={styles.cardTitle}>Stock Alerts</Text>
+                <Text style={styles.stockCount}>{lowStockCount} low</Text>
+              </View>
+              {lowStockCount === 0 ? (
+                <Text style={styles.muted}>All tracked items are above the low-stock limit.</Text>
+              ) : (
+                inventory.filter(isLowStock).map((item) => (
+                  <View key={item.productId} style={styles.stockRow}>
+                    <View style={styles.orderMain}>
+                      <Text style={styles.orderName}>{item.productName}</Text>
+                      <Text style={styles.muted}>Limit: {item.lowStockLimit}</Text>
+                    </View>
+                    <Text style={styles.stockQty}>{Math.max(0, Number(item.quantity || 0))}</Text>
+                  </View>
+                ))
+              )}
+            </View>
+
             <Pressable style={styles.progressButton} onPress={() => router.push("/live-progress")}>
               <Text style={styles.progressTitle}>📊 Ecosystem Development Progress</Text>
               <Text style={styles.progressSub}>Open the JBS app-by-app progress dashboard</Text>
@@ -152,6 +172,10 @@ const styles = StyleSheet.create({
   metricLabel: { color: "#8EAE99", fontSize: 11, marginTop: 4, fontWeight: "700" },
   card: { backgroundColor: "#102A1D", borderRadius: 20, padding: 16 },
   cardTitle: { color: "#FFFFFF", fontSize: 17, fontWeight: "900", marginBottom: 10 },
+  stockHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  stockCount: { color: "#FFD166", fontSize: 12, fontWeight: "900" },
+  stockRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 10, borderTopWidth: 1, borderTopColor: "#1D4030" },
+  stockQty: { color: "#FFD166", fontSize: 22, fontWeight: "900" },
   muted: { color: "#8EAE99", fontSize: 13 },
   orderRow: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 12, borderTopWidth: 1, borderTopColor: "#1D4030" },
   orderMain: { flex: 1, marginRight: 12 },
