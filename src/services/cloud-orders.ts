@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
@@ -30,6 +31,26 @@ export async function syncOrderToCloud(order: Order): Promise<boolean> {
   } catch (error) {
     console.log("Cloud order sync skipped:", error);
     return false;
+  }
+}
+
+export async function getCloudOrderById(
+  orderId: string,
+): Promise<Order | null> {
+  if (!auth.currentUser) return null;
+
+  try {
+    const snapshot = await getDoc(doc(db, ORDERS_COLLECTION, orderId));
+    if (!snapshot.exists()) return null;
+
+    const data = snapshot.data();
+    return {
+      ...(data as Order),
+      orderId: snapshot.id,
+    };
+  } catch (error) {
+    console.log("Cloud order read skipped:", error);
+    return null;
   }
 }
 
