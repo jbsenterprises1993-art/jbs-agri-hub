@@ -13,6 +13,11 @@
           "id": "firebase-security",
           "name": "Firestore ownership & admin-claim security",
           "status": "in_progress"
+        },
+        {
+          "id": "android-smoke",
+          "name": "Android customer smoke-flow validation",
+          "status": "in_progress"
         }
       ]
     },
