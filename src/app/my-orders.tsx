@@ -1,6 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
+import type { Order, OrderStatus } from "@/data/order-types";
+import { getOrders } from "@/services/orders";
 import {
   ActivityIndicator,
   Alert,
@@ -11,24 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-type OrderStatus =
-  | "Order Confirmed"
-  | "Order Processing"
-  | "Shipped"
-  | "Delivered";
-
-type Order = {
-  orderId: string;
-  name: string;
-  price: number;
-  quantity: number;
-  total: number;
-  paymentMethod: string;
-  deliveryType: string;
-  date: string;
-  status?: OrderStatus;
-};
 
 export default function MyOrdersScreen() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -50,17 +33,7 @@ export default function MyOrdersScreen() {
     try {
       setLoading(true);
 
-      const savedOrders =
-        await AsyncStorage.getItem("jbs_orders");
-
-      if (!savedOrders) {
-        setOrders([]);
-        return;
-      }
-
-      const parsedOrders: Order[] =
-        JSON.parse(savedOrders);
-
+      const parsedOrders = await getOrders();
       setOrders(parsedOrders);
     } catch (error) {
       console.log("Load orders error:", error);
