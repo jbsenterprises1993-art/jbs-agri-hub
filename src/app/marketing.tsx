@@ -1,0 +1,8 @@
+import { router } from "expo-router";
+import React from "react";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import type { MarketingPost } from "@/data/marketing-types";
+import { canPublishPost } from "@/services/marketing";
+const post:MarketingPost={id:"demo",title:"JBS Agri Hub",caption:"Agriculture equipment offer",channels:["whatsapp","facebook","instagram"],status:"draft"};
+export default function MarketingScreen(){return <SafeAreaView style={s.safe}><View style={s.c}><Pressable onPress={()=>router.back()}><Text style={s.b}>← Back</Text></Pressable><Text style={s.e}>JBS MARKETING</Text><Text style={s.t}>Marketing Control</Text><Text style={s.n}>Post contracts and publish-state validation are ready. Social APIs and scheduled publishing require connected provider accounts.</Text><View style={s.card}><Text style={s.title}>{post.title}</Text><Text style={s.caption}>{post.caption}</Text><Text style={s.meta}>Channels: {post.channels.join(" • ")}</Text><Text style={s.ready}>{canPublishPost(post)?"READY TO DRAFT/PUBLISH":"NOT PUBLISHABLE"}</Text></View></View></SafeAreaView>}
+const s=StyleSheet.create({safe:{flex:1,backgroundColor:"#071A12"},c:{padding:18},b:{color:"#6ED99A",fontSize:17,fontWeight:"800",marginBottom:22},e:{color:"#6ED99A",fontSize:11,fontWeight:"900",letterSpacing:2},t:{color:"#FFF",fontSize:28,fontWeight:"900",marginTop:4},n:{color:"#9BC7A9",fontSize:12,lineHeight:18,marginVertical:16},card:{backgroundColor:"#102A1D",borderRadius:18,padding:18},title:{color:"#FFF",fontSize:18,fontWeight:"900"},caption:{color:"#C9D8CE",marginTop:8},meta:{color:"#8EAE99",fontSize:11,marginTop:14},ready:{color:"#6ED99A",fontWeight:"900",fontSize:11,marginTop:14}});
