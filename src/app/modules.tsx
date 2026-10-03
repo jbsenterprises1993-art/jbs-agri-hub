@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import React from "react";
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { JBS_ECOSYSTEM } from "@/data/jbs-ecosystem";
+import { JBS_THEME } from "@/theme/jbs-theme";
 
 const routes: Record<string, string> = {
   "inventory": "/inventory",
@@ -48,19 +49,19 @@ export default function ModulesScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe:{flex:1,backgroundColor:"#071A12"},
+  safe:{flex:1,backgroundColor:JBS_THEME.colors.background},
   container:{padding:18,paddingBottom:40},
-  back:{color:"#6ED99A",fontSize:17,fontWeight:"800",marginBottom:22},
+  back:{color:JBS_THEME.colors.primarySoft,fontSize:17,fontWeight:"800",marginBottom:22},
   eyebrow:{color:"#6ED99A",fontSize:11,fontWeight:"900",letterSpacing:2},
-  title:{color:"#FFF",fontSize:30,fontWeight:"900",marginTop:4},
-  subtitle:{color:"#9BC7A9",fontSize:12,lineHeight:18,marginTop:6,marginBottom:18},
-  card:{backgroundColor:"#102A1D",borderRadius:18,padding:16,marginBottom:10},
+  title:{color:JBS_THEME.colors.text,fontSize:30,fontWeight:"900",marginTop:4},
+  subtitle:{color:JBS_THEME.colors.textSecondary,fontSize:12,lineHeight:18,marginTop:6,marginBottom:18},
+  card:{backgroundColor:JBS_THEME.colors.surfaceElevated,borderRadius:JBS_THEME.radius.lg,padding:16,marginBottom:10},
   row:{flexDirection:"row",alignItems:"center"},
   main:{flex:1},
   name:{color:"#FFF",fontSize:16,fontWeight:"900"},
-  tamil:{color:"#8EAE99",fontSize:11,marginTop:3},
+  tamil:{color:JBS_THEME.colors.textMuted,fontSize:11,marginTop:3},
   percent:{color:"#6ED99A",fontSize:18,fontWeight:"900"},
-  track:{height:7,backgroundColor:"#1D4030",borderRadius:8,overflow:"hidden",marginTop:13},
-  fill:{height:7,backgroundColor:"#20A653",borderRadius:8},
+  track:{height:7,backgroundColor:JBS_THEME.colors.border,borderRadius:8,overflow:"hidden",marginTop:13},
+  fill:{height:7,backgroundColor:JBS_THEME.colors.primary,borderRadius:8},
   meta:{color:"#8EAE99",fontSize:10,marginTop:8},
 });
