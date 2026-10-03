@@ -45,7 +45,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "test:firestore-rules": "node ./scripts/validate-firestore-rules.mjs"
+    "test:firestore-rules": "node ./scripts/validate-firestore-rules.mjs",
+    "test:customer-flow": "node ./scripts/validate-customer-flow.mjs"
   },
   "private": true
 }
