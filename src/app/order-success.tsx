@@ -2,6 +2,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import type { OrderItem, PaymentStatus } from "@/data/order-types";
 import { saveOrder as persistOrder } from "@/services/orders";
+import { clearCheckoutDraft } from "@/services/checkout";
 import {
     SafeAreaView,
     ScrollView,
@@ -100,7 +101,10 @@ export default function OrderSuccessScreen() {
       date: new Date().toISOString(),
       status: "Order Confirmed",
     })
-      .then(() => setSaved(true))
+      .then(async () => {
+        await clearCheckoutDraft();
+        setSaved(true);
+      })
       .catch((error) => console.log("Order save error:", error));
   }, [
     orderId,
