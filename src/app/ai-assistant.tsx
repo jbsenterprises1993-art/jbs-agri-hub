@@ -1,0 +1,8 @@
+import { router } from "expo-router";
+import React from "react";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import type { AiTask } from "@/data/ai-types";
+import { nextAiTasks } from "@/services/orchestrator";
+const tasks:AiTask[]=[];
+export default function AiAssistantScreen(){const next=nextAiTasks(tasks);return <SafeAreaView style={s.safe}><View style={s.c}><Pressable onPress={()=>router.back()}><Text style={s.b}>← Back</Text></Pressable><Text style={s.e}>JBS AI</Text><Text style={s.t}>AI Assistant Control</Text><Text style={s.n}>AI task contracts and permission checks are ready. Model provider, secure write actions and voice controls require final integration.</Text><View style={s.card}><Text style={s.big}>{next.length}</Text><Text style={s.label}>Queued AI tasks</Text><Text style={s.tip}>Read → Draft → Write → Publish → Financial permissions remain explicit.</Text></View></View></SafeAreaView>}
+const s=StyleSheet.create({safe:{flex:1,backgroundColor:"#071A12"},c:{padding:18},b:{color:"#6ED99A",fontSize:17,fontWeight:"800",marginBottom:22},e:{color:"#6ED99A",fontSize:11,fontWeight:"900",letterSpacing:2},t:{color:"#FFF",fontSize:28,fontWeight:"900",marginTop:4},n:{color:"#9BC7A9",fontSize:12,lineHeight:18,marginVertical:16},card:{backgroundColor:"#102A1D",borderRadius:18,padding:20},big:{color:"#FFF",fontSize:34,fontWeight:"900"},label:{color:"#6ED99A",fontWeight:"900",marginTop:4},tip:{color:"#9BC7A9",fontSize:11,lineHeight:17,marginTop:16}});
