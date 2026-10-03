@@ -30,7 +30,9 @@ export default function InventoryScreen() {
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
-  const lowStockCount = items.filter(isLowStock).length;\n\n  const updateQty = async (id: string, delta: number) => {
+  const lowStockCount = items.filter(isLowStock).length;
+
+  const updateQty = async (id: string, delta: number) => {
     const next = items.map(item => item.productId === id
       ? { ...item, quantity: Math.max(0, item.quantity + delta) }
       : item);
