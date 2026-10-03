@@ -3,6 +3,7 @@ import React, { useCallback, useState } from "react";
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import type { AiTask, AiTaskStatus } from "@/data/ai-types";
 import { canTransitionAiTask, updateAiTaskStatus } from "@/services/ai-tasks";
+import { canQueueAiTask } from "@/services/ai-permissions";
 import { getAiTasks, saveAiTask } from "@/services/ai-task-storage";
 import { JBS_THEME } from "@/theme/jbs-theme";
 
@@ -14,7 +15,7 @@ export default function AiAssistantScreen() {
   const load=useCallback(async()=>setTasks(await getAiTasks()),[]);
   useFocusEffect(useCallback(()=>{load();},[load]));
 
-  const addTask=async()=>{if(!instruction.trim())return; await saveAiTask({id:`ai-${Date.now()}`,appId:"owner",instruction:instruction.trim(),status:"queued",createdAt:new Date().toISOString()});setInstruction("");await load();};
+  const addTask=async()=>{if(!canQueueAiTask(["read","draft"])||!instruction.trim())return; await saveAiTask({id:`ai-${Date.now()}`,appId:"owner",instruction:instruction.trim(),status:"queued",createdAt:new Date().toISOString()});setInstruction("");await load();};
   const advance=async(task:AiTask)=>{const target=nextStatus[task.status];if(!target||!canTransitionAiTask(task.status,target))return;await saveAiTask(updateAiTaskStatus(task,target));await load();};
 
   return <SafeAreaView style={styles.safe}><ScrollView contentContainerStyle={styles.container}>
