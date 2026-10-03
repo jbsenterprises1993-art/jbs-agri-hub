@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { OrderItem, PaymentStatus } from "@/data/order-types";
 import { saveOrder as persistOrder } from "@/services/orders";
 import { clearCheckoutDraft } from "@/services/checkout";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
     SafeAreaView,
     ScrollView,
@@ -103,6 +104,7 @@ export default function OrderSuccessScreen() {
     })
       .then(async () => {
         await clearCheckoutDraft();
+        await AsyncStorage.removeItem("jbs_cart");
         setSaved(true);
       })
       .catch((error) => console.log("Order save error:", error));
