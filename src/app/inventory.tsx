@@ -2,7 +2,8 @@ import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import type { InventoryItem } from "@/data/inventory-types";
-import { getInventory, saveInventory } from "@/services/inventory-storage";
+import { getInventory, saveInventory, getStockMovements, recordStockMovement } from "@/services/inventory-storage";
+import type { StockMovement } from "@/data/inventory-types";
 import { isLowStock } from "@/services/inventory";
 
 const demoItems: InventoryItem[] = [
@@ -13,9 +14,11 @@ const demoItems: InventoryItem[] = [
 export default function InventoryScreen() {
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [movements, setMovements] = useState<StockMovement[]>([]);
 
   const load = useCallback(async () => {
     const stored = await getInventory();
+    setMovements(await getStockMovements());
     if (stored.length === 0) {
       await saveInventory(demoItems);
       setItems(demoItems);
@@ -33,6 +36,18 @@ export default function InventoryScreen() {
       : item);
     setItems(next);
     await saveInventory(next);
+    const item = items.find(entry => entry.productId === id);
+    if (item) {
+      await recordStockMovement({
+        id: `${id}-${Date.now()}`,
+        productId: id,
+        type: delta > 0 ? "purchase" : "sale",
+        quantity: Math.abs(delta),
+        unitRate: item.purchaseRate,
+        createdAt: new Date().toISOString(),
+      });
+      setMovements(await getStockMovements());
+    }
   };
 
   return (
@@ -41,7 +56,7 @@ export default function InventoryScreen() {
         <Pressable onPress={() => router.back()}><Text style={styles.back}>← Back</Text></Pressable>
         <Text style={styles.eyebrow}>JBS INVENTORY</Text>
         <Text style={styles.title}>Stock Control</Text>
-        <Text style={styles.sub}>Local inventory foundation • low-stock limits included</Text>
+        <Text style={styles.sub}>Local inventory foundation • low-stock limits included</Text>\n        <Text style={styles.summary}>Low stock: {items.filter(isLowStock).length} • Movements: {movements.length}</Text>
         {loaded && items.map(item => (
           <View key={item.productId} style={styles.card}>
             <View style={styles.row}>
