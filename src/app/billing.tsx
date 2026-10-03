@@ -8,6 +8,9 @@ import { JBS_THEME } from "@/theme/jbs-theme";
 export default function BillingScreen() {
   const [qty, setQty] = useState("1");
   const [price, setPrice] = useState("12500");
+  const [gst, setGst] = useState("18");
+  const [customerName, setCustomerName] = useState("");
+  const [invoiceId, setInvoiceId] = useState("JBS-DEMO-001");
   const gstPercent = Math.min(100, Math.max(0, Number(gst) || 0));
   const item: InvoiceItem = {
     id: "demo",
@@ -16,7 +19,7 @@ export default function BillingScreen() {
     unitPrice: Math.max(0, Number(price) || 0),
     gstPercent,
   };
-  const totals = useMemo(() => calculateInvoice([item]), [item.quantity, item.unitPrice]);
+  const totals = useMemo(() => calculateInvoice([item]), [item.quantity, item.unitPrice, item.gstPercent]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -39,13 +42,14 @@ export default function BillingScreen() {
           <Text style={styles.label}>Quantity</Text>
           <TextInput value={qty} onChangeText={setQty} keyboardType="numeric" style={styles.input} />
           <Text style={styles.label}>Unit Price (₹)</Text>
+          <TextInput value={price} onChangeText={setPrice} keyboardType="decimal-pad" style={styles.input} />
           <Text style={styles.label}>GST %</Text>
           <TextInput value={gst} onChangeText={setGst} keyboardType="decimal-pad" style={styles.input} />
-          <TextInput value={price} onChangeText={setPrice} keyboardType="numeric" style={styles.input} />
         </View>
 
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Invoice Summary</Text>
+          <Line label="Customer" valueText={customerName.trim() || "Walk-in Customer"} />
           <Line label="Subtotal" value={totals.subtotal} />
           <Line label="Customer" valueText={customerName.trim() || "Walk-in Customer"} />
           <Line label="CGST (" + gstPercent / 2 + "%)" value={totals.gstTotal / 2} />
@@ -86,6 +90,7 @@ const styles = StyleSheet.create({
   eyebrow: { color: JBS_THEME.colors.primarySoft, fontSize: 11, fontWeight: "900", letterSpacing: 2 },
   title: { color: JBS_THEME.colors.text, fontSize: 28, fontWeight: "900", marginTop: 4 },
   note: { color: JBS_THEME.colors.textSecondary, fontSize: 12, lineHeight: 18, marginVertical: JBS_THEME.spacing.lg },
+  warning: { color: JBS_THEME.colors.warning, fontSize: 11, fontWeight: "700", marginTop: JBS_THEME.spacing.md },
   inputCard: {
     backgroundColor: JBS_THEME.colors.surface,
     borderRadius: JBS_THEME.radius.lg,
