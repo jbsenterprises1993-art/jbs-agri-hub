@@ -39,7 +39,7 @@ export default function PaymentScreen() {
       ? params.transport
       : "";
 
-  const canPay = paymentMethod !== "";
+  const canPay = paymentMethod === "cod";
 
   const handlePayment = () => {
     if (!canPay) {
@@ -75,6 +75,19 @@ export default function PaymentScreen() {
             : transport !== ""
             ? transport
             : "Transport",
+        customerName:
+          typeof params.customerName === "string"
+            ? params.customerName
+            : "",
+        mobile:
+          typeof params.mobile === "string"
+            ? params.mobile
+            : "",
+        address:
+          typeof params.address === "string"
+            ? params.address
+            : "",
+        paymentStatus: "cod",
       },
     });
   };
@@ -174,12 +187,10 @@ export default function PaymentScreen() {
             activeOpacity={0.8}
             style={[
               styles.paymentOption,
-              paymentMethod === "upi" &&
-                styles.selectedOption,
+              styles.disabledPaymentOption,
             ]}
-            onPress={() =>
-              setPaymentMethod("upi")
-            }
+            disabled
+            onPress={() => undefined }
           >
             <View style={styles.paymentRow}>
               <Text style={styles.paymentIcon}>
@@ -192,7 +203,7 @@ export default function PaymentScreen() {
                 </Text>
 
                 <Text style={styles.paymentText}>
-                  Pay using any supported UPI app
+                  Gateway integration pending — UPI is not enabled yet
                 </Text>
               </View>
 
@@ -203,7 +214,7 @@ export default function PaymentScreen() {
                     styles.radioSelected,
                 ]}
               >
-                {paymentMethod === "upi" && (
+                {false && paymentMethod === "upi" && (
                   <View
                     style={styles.radioInner}
                   />
@@ -314,7 +325,7 @@ export default function PaymentScreen() {
           <Text style={styles.payButtonText}>
             {paymentMethod === "cod"
               ? "Place Order"
-              : "Pay Now"}
+              : "UPI Unavailable"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -420,6 +431,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#166534",
+  },
+
+  disabledPaymentOption: {
+    opacity: 0.55,
   },
 
   paymentOption: {
