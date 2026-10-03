@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   expoLogoBackground: {
-    backgroundImage: 'linear-gradient(180deg, #3c9ffe, #0274df)',
+    backgroundColor: '#0274df',
     borderRadius: 40,
     width: 128,
     height: 128,
