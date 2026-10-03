@@ -26,6 +26,13 @@ export async function getOrders(): Promise<Order[]> {
   }
 }
 
+export async function getOrderById(
+  orderId: string,
+): Promise<Order | null> {
+  const orders = await getOrders();
+  return orders.find((order) => order.orderId === orderId) ?? null;
+}
+
 export async function saveOrder(order: Order): Promise<void> {
   const orders = await getOrders();
   const withoutDuplicate = orders.filter(
