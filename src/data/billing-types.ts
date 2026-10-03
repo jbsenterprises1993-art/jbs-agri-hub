@@ -10,6 +10,7 @@ export type InvoiceItem = {
 
 export type Invoice = {
   invoiceId: string;
+  orderId?: string;
   customerName: string;
   customerMobile?: string;
   items: InvoiceItem[];
