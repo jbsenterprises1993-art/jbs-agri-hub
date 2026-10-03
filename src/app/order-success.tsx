@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { OrderItem, PaymentStatus } from "@/data/order-types";
 import { saveOrder as persistOrder } from "@/services/orders";
 import { clearCheckoutDraft } from "@/services/checkout";
+import { JBS_THEME } from "@/theme/jbs-theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
     SafeAreaView,
@@ -316,7 +317,7 @@ export default function OrderSuccessScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#F4FFF6",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   container: {
@@ -331,7 +332,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: "#16A34A",
+    backgroundColor: JBS_THEME.colors.primary,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
@@ -356,7 +357,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     textAlign: "center",
   },
 
@@ -364,21 +365,21 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 17,
     fontWeight: "700",
-    color: "#222222",
+    color: JBS_THEME.colors.text,
     textAlign: "center",
   },
 
   message: {
     marginTop: 6,
     fontSize: 14,
-    color: "#666666",
+    color: JBS_THEME.colors.textSecondary,
     textAlign: "center",
     marginBottom: 25,
   },
 
   card: {
     width: "100%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderRadius: 18,
     padding: 20,
 
@@ -395,7 +396,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
     marginBottom: 18,
   },
 
@@ -416,7 +417,7 @@ const styles = StyleSheet.create({
     flex: 1.3,
     fontSize: 14,
     fontWeight: "600",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
     textAlign: "right",
   },
 
@@ -436,20 +437,20 @@ const styles = StyleSheet.create({
   totalLabel: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
   },
 
   totalValue: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   paymentSuccessBox: {
     width: "100%",
-    backgroundColor: "#DCFCE7",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     borderWidth: 1,
-    borderColor: "#86EFAC",
+    borderColor: JBS_THEME.colors.primary,
     borderRadius: 14,
     paddingVertical: 15,
     paddingHorizontal: 15,
@@ -468,19 +469,19 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingVertical: 12,
     borderRadius: 12,
-    backgroundColor: "#ECFDF5",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
   },
 
   savedText: {
     textAlign: "center",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     fontSize: 14,
     fontWeight: "bold",
   },
 
   infoBox: {
     width: "100%",
-    backgroundColor: "#F0FDF4",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     borderRadius: 15,
     padding: 17,
     marginTop: 15,
@@ -489,7 +490,7 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 17,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     marginBottom: 7,
   },
 
@@ -518,7 +519,7 @@ const styles = StyleSheet.create({
   homeButton: {
     width: "100%",
     height: 55,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderWidth: 2,
     borderColor: "#15803D",
     borderRadius: 14,
@@ -528,7 +529,7 @@ const styles = StyleSheet.create({
   },
 
   homeButtonText: {
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     fontSize: 17,
     fontWeight: "bold",
   },
@@ -544,7 +545,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 14,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     letterSpacing: 1.5,
   },
 });
