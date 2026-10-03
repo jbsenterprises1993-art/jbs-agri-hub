@@ -28,7 +28,7 @@ export default function OrderDetailsScreen() {
     };
   }, [paramOrderId]);
 
-  const orderId = cloudOrder?.orderId ?? paramOrderId || "JBS Order";
+  const orderId = cloudOrder?.orderId ?? (paramOrderId || "JBS Order");
 
   const name = cloudOrder?.name ?? (typeof params.name === "string" ? params.name : "Product");
 
