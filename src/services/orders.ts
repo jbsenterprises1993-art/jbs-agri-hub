@@ -27,6 +27,21 @@ export async function getOrders(): Promise<Order[]> {
   }
 }
 
+export async function mergeOrdersWithCloud(
+  localOrders: Order[],
+  cloudOrders: Order[],
+): Promise<Order[]> {
+  const merged = new Map<string, Order>();
+  for (const order of localOrders) merged.set(order.orderId, order);
+  for (const order of cloudOrders) merged.set(order.orderId, {
+    ...merged.get(order.orderId),
+    ...order,
+  });
+  return Array.from(merged.values()).sort((a, b) =>
+    String(b.date).localeCompare(String(a.date)),
+  );
+}
+
 export async function getOrderById(
   orderId: string,
 ): Promise<Order | null> {
