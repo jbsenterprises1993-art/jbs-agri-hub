@@ -21,7 +21,7 @@ export async function nextInvoiceNumber(date = new Date()): Promise<string> {
 export function buildInvoiceItemsFromOrder(order: Order, gstPercent: number): InvoiceItem[] {
   const source = order.items?.length
     ? order.items
-    : [{ id: order.name.toLowerCase().replace(/\\s+/g, "-"), name: order.name, price: order.price, quantity: order.quantity }];
+    : [{ id: order.name.toLowerCase().replace(/\s+/g, "-"), name: order.name, price: order.price, quantity: order.quantity }];
 
   return source.map((item) => ({
     id: item.id,
