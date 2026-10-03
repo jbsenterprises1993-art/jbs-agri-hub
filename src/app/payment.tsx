@@ -267,7 +267,7 @@ export default function PaymentScreen() {
 
             <Text style={styles.infoText}>
               UPI payment selected.
-              Press Pay Now to continue.
+              Press Continue to continue.
             </Text>
           </View>
         )}
