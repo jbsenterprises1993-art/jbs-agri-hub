@@ -12,6 +12,7 @@ import {
 import type { Order } from "@/data/order-types";
 import { getOrders } from "@/services/orders";
 import { subscribeToCloudOrders } from "@/services/cloud-orders";
+import { buildBusinessMetric } from "@/services/business-reports";
 
 export default function OwnerDashboardScreen() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -41,6 +42,7 @@ export default function OwnerDashboardScreen() {
   const confirmed = orders.filter((order) => order.status !== "Delivered").length;
   const delivered = orders.filter((order) => order.status === "Delivered").length;
   const revenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+  const report = buildBusinessMetric(orders, "daily", new Date().toISOString().slice(0, 10), new Date().toISOString().slice(0, 10));
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -67,6 +69,7 @@ export default function OwnerDashboardScreen() {
               <Metric label="Open" value={String(confirmed)} />
               <Metric label="Delivered" value={String(delivered)} />
               <Metric label="Order Value" value={`₹${revenue.toLocaleString("en-IN")}`} />
+              <Metric label="Sales KPI" value={`₹${report.sales.toLocaleString("en-IN")}`} />
             </View>
 
             <View style={styles.card}>
