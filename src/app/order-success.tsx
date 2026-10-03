@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { OrderItem, PaymentStatus } from "@/data/order-types";
 import { saveOrder as persistOrder } from "@/services/orders";
 import { clearCheckoutDraft } from "@/services/checkout";
+import { applyOrderSale } from "@/services/inventory";
 import { JBS_THEME } from "@/theme/jbs-theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -87,7 +88,7 @@ export default function OrderSuccessScreen() {
       : price * quantity;
 
   useEffect(() => {
-    persistOrder({
+    const order = {
       orderId,
       name,
       price,
@@ -101,14 +102,19 @@ export default function OrderSuccessScreen() {
       mobile,
       address,
       date: new Date().toISOString(),
-      status: "Order Confirmed",
-    })
+      status: "Order Confirmed" as const,
+    };
+
+    applyOrderSale(order)
+      .then(() => persistOrder(order))
       .then(async () => {
         await clearCheckoutDraft();
         await AsyncStorage.removeItem("jbs_cart");
         setSaved(true);
       })
-      .catch((error) => console.log("Order save error:", error));
+      .catch((error) => {
+        console.log("Order save/inventory error:", error);
+      });
   }, [
     orderId,
     name,
