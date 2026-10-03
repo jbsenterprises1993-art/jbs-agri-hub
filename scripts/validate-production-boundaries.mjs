@@ -10,7 +10,7 @@ const checks = [
   ["payroll calculation", "src/services/payroll.ts", /calculateSalary/],
   ["payment server verification", "src/services/payment-boundary.ts", /verifiedByServer/],
   ["order success payment boundary", "src/app/order-success.tsx", /resolvePaymentStatus\(requestedPaymentStatus\)/],
-  ["invoice fallback normalization", "src/services/invoice.ts", /replace\(\/\\s\+\/g, "-"\)/],
+  ["invoice fallback normalization", "src/services/invoice.ts", /replace\(\/\\s\+\/g, "-"/],
   ["client cannot mark paid", "src/services/payment-boundary.ts", /canClientMarkPaid\(\): false/],
   ["delivery order bridge", "src/services/delivery-order.ts", /deliveryToOrderStatus/],
   ["marketing due scheduler", "src/services/marketing-scheduler.ts", /getDueScheduledPosts/],
@@ -18,6 +18,7 @@ const checks = [
   ["inventory idempotency", "src/services/inventory.ts", /sale:\$\{order\.orderId\}:\$\{productId\}/],
   ["inventory stock guard", "src/services/inventory.ts", /Insufficient stock for/],
   ["inventory atomic commit", "src/services/inventory.ts", /commitInventoryAndMovements\(/],
+  ["inventory serialized commit", "src/services/inventory.ts", /inventorySaleQueue/],
   ["release target", "docs/10-day-production-target.md", /Day 10 — Release readiness/],
 ];
 
