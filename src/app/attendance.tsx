@@ -1,0 +1,8 @@
+import { router } from "expo-router";
+import React from "react";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { attendanceSummary } from "@/services/attendance";
+import type { AttendanceRecord } from "@/data/attendance-types";
+export default function AttendanceScreen(){const records:AttendanceRecord[]=[];const s=attendanceSummary(records,"demo");return <SafeAreaView style={styles.safe}><View style={styles.c}><Pressable onPress={()=>router.back()}><Text style={styles.back}>← Back</Text></Pressable><Text style={styles.e}>JBS ATTENDANCE</Text><Text style={styles.t}>Attendance & Salary</Text><Text style={styles.n}>Attendance summary engine is ready. Employee storage, biometric verification and payroll execution are pending integration.</Text><View style={styles.card}><Line l="Present" v={s.present}/><Line l="Absent" v={s.absent}/><Line l="Leave" v={s.leave}/><Line l="Half Day" v={s.halfDay}/></View></View></SafeAreaView>}
+function Line({l,v}:{l:string;v:number}){return <View style={styles.line}><Text style={styles.l}>{l}</Text><Text style={styles.v}>{v}</Text></View>}
+const styles=StyleSheet.create({safe:{flex:1,backgroundColor:"#071A12"},c:{padding:18},back:{color:"#6ED99A",fontSize:17,fontWeight:"800",marginBottom:22},e:{color:"#6ED99A",fontSize:11,fontWeight:"900",letterSpacing:2},t:{color:"#FFF",fontSize:28,fontWeight:"900",marginTop:4},n:{color:"#9BC7A9",fontSize:12,lineHeight:18,marginVertical:16},card:{backgroundColor:"#102A1D",borderRadius:18,padding:16},line:{flexDirection:"row",justifyContent:"space-between",paddingVertical:12,borderBottomWidth:1,borderBottomColor:"#1D4030"},l:{color:"#9BC7A9"},v:{color:"#FFF",fontWeight:"900"}});
