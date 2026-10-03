@@ -12,11 +12,10 @@ service cloud.firestore {
 
     function validOrderStatus(status) {
       return status in [
-        'pending',
-        'processing',
-        'shipped',
-        'delivered',
-        'cancelled'
+        'Order Confirmed',
+        'Order Processing',
+        'Shipped',
+        'Delivered'
       ];
     }
 
