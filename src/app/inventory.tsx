@@ -31,6 +31,13 @@ export default function InventoryScreen() {
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
   const lowStockCount = items.filter(isLowStock).length;
+  const highStockCount = items.filter((item) =>
+    item.highStockLimit !== undefined && Number(item.quantity) >= Number(item.highStockLimit),
+  ).length;
+  const stockValue = items.reduce(
+    (sum, item) => sum + Math.max(0, Number(item.quantity || 0)) * Math.max(0, Number(item.purchaseRate || 0)),
+    0,
+  );
 
   const updateQty = async (id: string, delta: number) => {
     const next = items.map(item => item.productId === id
@@ -58,7 +65,14 @@ export default function InventoryScreen() {
         <Pressable onPress={() => router.back()}><Text style={styles.back}>← Back</Text></Pressable>
         <Text style={styles.eyebrow}>JBS INVENTORY</Text>
         <Text style={styles.title}>Stock Control</Text>
-        <Text style={styles.sub}>Local inventory foundation • low-stock limits included</Text>\n        <View style={styles.summaryRow}>\n          <Text style={styles.summary}>Low stock: {lowStockCount} • Movements: {movements.length}</Text>\n          <Pressable onPress={load} accessibilityRole="button"><Text style={styles.reload}>↻ Reload</Text></Pressable>\n        </View>
+        <Text style={styles.sub}>Local inventory foundation • low-stock limits included</Text>
+        <View style={styles.summaryRow}>
+          <View style={styles.summaryBlock}>
+            <Text style={styles.summary}>Low: {lowStockCount} • High: {highStockCount}</Text>
+            <Text style={styles.summarySub}>Value: ₹{stockValue.toLocaleString("en-IN")} • Movements: {movements.length}</Text>
+          </View>
+          <Pressable onPress={load} accessibilityRole="button"><Text style={styles.reload}>↻ Reload</Text></Pressable>
+        </View>
         {loaded && items.map(item => (
           <View key={item.productId} style={styles.card}>
             <View style={styles.row}>
