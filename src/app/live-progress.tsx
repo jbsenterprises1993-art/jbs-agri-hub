@@ -43,7 +43,7 @@ function moduleProgress(module: AppModule) {
 
 export default function LiveProgressScreen() {
   const [filter, setFilter] = useState<'all' | Status>('all');
-  const [modules, setModules] = useState(initialModules);
+  const modules = initialModules;
   const [lastSynced, setLastSynced] = useState(new Date());
 
   const totals = useMemo(() => {
@@ -63,23 +63,7 @@ export default function LiveProgressScreen() {
 
   const refresh = () => setLastSynced(new Date());
 
-  const markNextInProgressCompleted = (moduleId: string) => {
-    setModules((current) =>
-      current.map((module) => {
-        if (module.id !== moduleId) return module;
-        let changed = false;
-        const tasks = module.tasks.map((task) => {
-          if (!changed && task.status === 'in_progress') {
-            changed = true;
-            return { ...task, status: 'completed' as Status };
-          }
-          return task;
-        });
-        return { ...module, tasks };
-      }),
-    );
-    setLastSynced(new Date());
-  };
+  const refresh = () => setLastSynced(new Date());
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -153,12 +137,9 @@ export default function LiveProgressScreen() {
               </View>
 
               {inProgress && (
-                <Pressable
-                  style={styles.action}
-                  onPress={() => markNextInProgressCompleted(module.id)}
-                >
-                  <Text style={styles.actionText}>Mark next task completed</Text>
-                </Pressable>
+                <View style={styles.action}>
+                  <Text style={styles.actionText}>Status comes from JBS ecosystem source</Text>
+                </View>
               )}
             </View>
           );
