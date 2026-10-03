@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { getCheckoutDraft } from "@/services/checkout";
+import { JBS_THEME } from "@/theme/jbs-theme";
 import {
     SafeAreaView,
     ScrollView,
@@ -417,11 +418,11 @@ export default function CheckoutScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F4F8F3",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   header: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     paddingHorizontal: 20,
     paddingVertical: 18,
     flexDirection: "row",
@@ -431,13 +432,13 @@ const styles = StyleSheet.create({
 
   back: {
     fontSize: 30,
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   title: {
     fontSize: 23,
     fontWeight: "bold",
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   content: {
@@ -448,13 +449,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
     marginTop: 15,
     marginBottom: 12,
   },
 
   card: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderRadius: 18,
     padding: 20,
     marginBottom: 15,
@@ -463,7 +464,7 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#222222",
+    color: JBS_THEME.colors.text,
     marginBottom: 20,
   },
 
@@ -476,37 +477,37 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 16,
-    color: "#777777",
+    color: JBS_THEME.colors.textSecondary,
   },
 
   value: {
     fontSize: 17,
     fontWeight: "bold",
-    color: "#222222",
+    color: JBS_THEME.colors.text,
   },
 
   line: {
     height: 1,
-    backgroundColor: "#E5E7EB",
+    backgroundColor: JBS_THEME.colors.border,
     marginVertical: 12,
   },
 
   totalLabel: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#222222",
+    color: JBS_THEME.colors.text,
   },
 
   total: {
     fontSize: 23,
     fontWeight: "bold",
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   deliveryText: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
     marginBottom: 5,
   },
 
@@ -516,12 +517,12 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 2,
     borderColor: "#E5E7EB",
-    backgroundColor: "#F9FAFB",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
   },
 
   selectedOption: {
-    borderColor: "#16A34A",
-    backgroundColor: "#DCFCE7",
+    borderColor: JBS_THEME.colors.primary,
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
   },
 
   optionRow: {
@@ -541,12 +542,12 @@ const styles = StyleSheet.create({
   optionTitle: {
     fontSize: 17,
     fontWeight: "bold",
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   optionText: {
     fontSize: 13,
-    color: "#777777",
+    color: JBS_THEME.colors.textSecondary,
     marginTop: 5,
     lineHeight: 19,
   },
@@ -563,7 +564,7 @@ const styles = StyleSheet.create({
   },
 
   radioOuterSelected: {
-    borderColor: "#16A34A",
+    borderColor: JBS_THEME.colors.primary,
   },
 
   radioInner: {
@@ -578,7 +579,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 2,
     borderColor: "#E5E7EB",
-    backgroundColor: "#F9FAFB",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     marginBottom: 12,
   },
 
@@ -591,7 +592,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 17,
     fontWeight: "bold",
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   inputLabel: {
@@ -606,11 +607,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#D1D5DB",
     borderRadius: 12,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     paddingHorizontal: 15,
     paddingVertical: 13,
     fontSize: 16,
-    color: "#222222",
+    color: JBS_THEME.colors.text,
     marginBottom: 12,
   },
 
@@ -619,7 +620,7 @@ const styles = StyleSheet.create({
   },
 
   pickupMessage: {
-    backgroundColor: "#DCFCE7",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     borderRadius: 15,
     padding: 18,
     marginTop: 5,
@@ -627,7 +628,7 @@ const styles = StyleSheet.create({
   },
 
   pickupTitle: {
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
     fontSize: 17,
     fontWeight: "bold",
   },
@@ -640,7 +641,7 @@ const styles = StyleSheet.create({
   },
 
   bottom: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     padding: 18,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -649,13 +650,13 @@ const styles = StyleSheet.create({
 
   payLabel: {
     fontSize: 13,
-    color: "#777777",
+    color: JBS_THEME.colors.textSecondary,
   },
 
   payTotal: {
     fontSize: 23,
     fontWeight: "bold",
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   continueButton: {
