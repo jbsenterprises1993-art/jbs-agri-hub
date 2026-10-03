@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
+import { JBS_THEME } from "@/theme/jbs-theme";
 import {
   SafeAreaView,
   ScrollView,
@@ -327,11 +328,11 @@ export default function PaymentScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F4F8F3",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   header: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     paddingHorizontal: 20,
     paddingVertical: 18,
     flexDirection: "row",
@@ -341,7 +342,7 @@ const styles = StyleSheet.create({
 
   back: {
     fontSize: 30,
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   title: {
@@ -382,7 +383,7 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#222222",
+    color: JBS_THEME.colors.text,
     marginBottom: 18,
   },
 
@@ -395,7 +396,7 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 15,
-    color: "#777777",
+    color: JBS_THEME.colors.textSecondary,
   },
 
   value: {
@@ -408,7 +409,7 @@ const styles = StyleSheet.create({
 
   line: {
     height: 1,
-    backgroundColor: "#E5E7EB",
+    backgroundColor: JBS_THEME.colors.border,
     marginVertical: 12,
   },
 
@@ -434,12 +435,12 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
   },
 
   selectedOption: {
-    borderColor: "#16A34A",
-    backgroundColor: "#DCFCE7",
+    borderColor: JBS_THEME.colors.primary,
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
   },
 
   paymentRow: {
