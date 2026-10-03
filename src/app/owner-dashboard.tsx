@@ -107,8 +107,16 @@ export default function OwnerDashboardScreen() {
               )}
             </View>
 
-            <View style={styles.card}>
+            <Pressable style={styles.stockCard} onPress={() => router.push("/inventory")}>
+              <View style={styles.stockCardHeader}>
+                <View style={styles.orderMain}>
+                  <Text style={styles.cardTitle}>Stock Alerts</Text>
+                  <Text style={styles.stockHint}>Open Inventory →</Text>
+                </View>
+                <Text style={styles.stockCount}>{lowStockCount} low</Text>
+              </View>
               <View style={styles.stockHeader}>
+
                 <Text style={styles.cardTitle}>Stock Alerts</Text>
                 <Text style={styles.stockCount}>{lowStockCount} low</Text>
               </View>
@@ -125,7 +133,7 @@ export default function OwnerDashboardScreen() {
                   </View>
                 ))
               )}
-            </View>
+            </Pressable>
 
             <Pressable style={styles.progressButton} onPress={() => router.push("/live-progress")}>
               <Text style={styles.progressTitle}>📊 Ecosystem Development Progress</Text>
@@ -172,6 +180,9 @@ const styles = StyleSheet.create({
   metricLabel: { color: "#8EAE99", fontSize: 11, marginTop: 4, fontWeight: "700" },
   card: { backgroundColor: "#102A1D", borderRadius: 20, padding: 16 },
   cardTitle: { color: "#FFFFFF", fontSize: 17, fontWeight: "900", marginBottom: 10 },
+  stockCard: { backgroundColor: "#102A1D", borderRadius: 20, padding: 16, marginBottom: 16 },
+  stockCardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 2 },
+  stockHint: { color: "#6ED99A", fontSize: 10, fontWeight: "800", marginTop: -6, marginBottom: 8 },
   stockHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   stockCount: { color: "#FFD166", fontSize: 12, fontWeight: "900" },
   stockRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 10, borderTopWidth: 1, borderTopColor: "#1D4030" },
