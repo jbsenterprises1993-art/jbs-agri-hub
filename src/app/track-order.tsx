@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { useFocusEffect } from "expo-router";
 import type { OrderStatus } from "@/data/order-types";
-import { getOrders } from "@/services/orders";
+import { getOrderById } from "@/services/orders";
 import {
     SafeAreaView,
     ScrollView,
@@ -44,8 +44,7 @@ export default function TrackOrderScreen() {
   useFocusEffect(
     useCallback(() => {
       let active = true;
-      getOrders().then((orders) => {
-        const order = orders.find((item) => item.orderId === orderId);
+      getOrderById(orderId).then((order) => {
         if (active && order) setLiveStatus(order.status);
       });
       return () => {
