@@ -25,7 +25,7 @@ export default function OwnerDashboardScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      let unsubscribe = () => undefined;
+      let unsubscribe: () => void = () => undefined;
 
       load().then(() => {
         unsubscribe = subscribeToCloudOrders(
