@@ -194,7 +194,7 @@ export default function PaymentScreen() {
               styles.disabledPaymentOption,
             ]}
             disabled
-            onPress={() => undefined }
+            onPress={() => undefined}
           >
             <View style={styles.paymentRow}>
               <Text style={styles.paymentIcon}>
@@ -273,19 +273,6 @@ export default function PaymentScreen() {
         </View>
 
         {/* UPI INFO */}
-
-        {paymentMethod === "upi" && (
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>
-              UPI Payment
-            </Text>
-
-            <Text style={styles.infoText}>
-              UPI payment selected.
-              Press Continue to continue.
-            </Text>
-          </View>
-        )}
 
         {/* COD INFO */}
 
