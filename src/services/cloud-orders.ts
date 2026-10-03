@@ -8,10 +8,18 @@ import {
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
-import { db, auth } from "@/firebaseConfig";\nimport { getFirebaseAuthReadiness } from "@/services/firebase-readiness";
+import { db, auth } from "@/firebaseConfig";
+import { getFirebaseAuthReadiness } from "@/services/firebase-readiness";
 import type { Order, OrderStatus } from "@/data/order-types";
 
 const ORDERS_COLLECTION = "orders";
+
+function logAuthBoundary(operation: string) {
+  const readiness = getFirebaseAuthReadiness();
+  if (readiness.nativeSignedIn && !readiness.cloudSyncReady) {
+    console.log(`Cloud order ${operation} blocked: ${readiness.message}`);
+  }
+}
 
 function toFirestoreOrder(order: Order) {
   return {
@@ -22,7 +30,10 @@ function toFirestoreOrder(order: Order) {
 }
 
 export async function syncOrderToCloud(order: Order): Promise<boolean> {
-  if (!auth.currentUser) {\n    const readiness = getFirebaseAuthReadiness();\n    if (readiness.nativeSignedIn) {\n      console.log("Cloud order sync blocked:", readiness.message);\n    }\n    return false;\n  }
+  if (!auth.currentUser) {
+    logAuthBoundary("sync");
+    return false;
+  }
 
   try {
     await setDoc(
@@ -40,7 +51,10 @@ export async function syncOrderToCloud(order: Order): Promise<boolean> {
 export async function getCloudOrderById(
   orderId: string,
 ): Promise<Order | null> {
-  if (!auth.currentUser) {\n    const readiness = getFirebaseAuthReadiness();\n    if (readiness.nativeSignedIn) {\n      console.log("Cloud order read blocked:", readiness.message);\n    }\n    return null;\n  }
+  if (!auth.currentUser) {
+    logAuthBoundary("read");
+    return null;
+  }
 
   try {
     const snapshot = await getDoc(doc(db, ORDERS_COLLECTION, orderId));
@@ -61,7 +75,10 @@ export async function syncOrderStatusToCloud(
   orderId: string,
   status: OrderStatus,
 ): Promise<boolean> {
-  if (!auth.currentUser) return false;
+  if (!auth.currentUser) {
+    logAuthBoundary("status update");
+    return false;
+  }
 
   try {
     await setDoc(
@@ -84,7 +101,10 @@ export function subscribeToCurrentUserOrders(
   onError?: (error: Error) => void,
 ) {
   const userId = auth.currentUser?.uid;
-  if (!userId) return () => undefined;
+  if (!userId) {
+    logAuthBoundary("current-user listener");
+    return () => undefined;
+  }
 
   const userOrdersQuery = query(
     collection(db, ORDERS_COLLECTION),
@@ -108,7 +128,10 @@ export function subscribeToCloudOrders(
   onOrders: (orders: Order[]) => void,
   onError?: (error: Error) => void,
 ) {
-  if (!auth.currentUser) {\n    const readiness = getFirebaseAuthReadiness();\n    if (readiness.nativeSignedIn) {\n      console.log("Cloud order listener blocked:", readiness.message);\n    }\n    return () => undefined;\n  }
+  if (!auth.currentUser) {
+    logAuthBoundary("admin listener");
+    return () => undefined;
+  }
 
   return onSnapshot(
     collection(db, ORDERS_COLLECTION),
