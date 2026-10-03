@@ -8,12 +8,13 @@ import { JBS_THEME } from "@/theme/jbs-theme";
 export default function BillingScreen() {
   const [qty, setQty] = useState("1");
   const [price, setPrice] = useState("12500");
+  const gstPercent = Math.min(100, Math.max(0, Number(gst) || 0));
   const item: InvoiceItem = {
     id: "demo",
     name: "Petrol Power Sprayer",
     quantity: Math.max(1, Number(qty) || 1),
     unitPrice: Math.max(0, Number(price) || 0),
-    gstPercent: 18,
+    gstPercent,
   };
   const totals = useMemo(() => calculateInvoice([item]), [item.quantity, item.unitPrice]);
 
@@ -31,16 +32,25 @@ export default function BillingScreen() {
 
         <View style={styles.inputCard}>
           <Text style={styles.sectionTitle}>Invoice Details</Text>
+          <Text style={styles.label}>Invoice Number</Text>
+          <TextInput value={invoiceId} onChangeText={setInvoiceId} style={styles.input} autoCapitalize="characters" />
+          <Text style={styles.label}>Customer Name</Text>
+          <TextInput value={customerName} onChangeText={setCustomerName} style={styles.input} placeholder="Optional" placeholderTextColor={JBS_THEME.colors.textMuted} />
           <Text style={styles.label}>Quantity</Text>
           <TextInput value={qty} onChangeText={setQty} keyboardType="numeric" style={styles.input} />
-          <Text style={styles.label}>Unit Price</Text>
+          <Text style={styles.label}>Unit Price (₹)</Text>
+          <Text style={styles.label}>GST %</Text>
+          <TextInput value={gst} onChangeText={setGst} keyboardType="decimal-pad" style={styles.input} />
           <TextInput value={price} onChangeText={setPrice} keyboardType="numeric" style={styles.input} />
         </View>
 
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Invoice Summary</Text>
           <Line label="Subtotal" value={totals.subtotal} />
-          <Line label="GST (18%)" value={totals.gstTotal} />
+          <Line label="Customer" valueText={customerName.trim() || "Walk-in Customer"} />
+          <Line label="CGST (" + gstPercent / 2 + "%)" value={totals.gstTotal / 2} />
+          <Line label="SGST (" + gstPercent / 2 + "%)" value={totals.gstTotal / 2} />
+          <Line label="GST Total" value={totals.gstTotal} />
           <Line label="Grand Total" value={totals.grandTotal} strong />
         </View>
       </View>
@@ -48,12 +58,12 @@ export default function BillingScreen() {
   );
 }
 
-function Line({ label, value, strong }: { label: string; value: number; strong?: boolean }) {
+function Line({ label, value, valueText, strong }: { label: string; value?: number; valueText?: string; strong?: boolean }) {
   return (
     <View style={styles.line}>
       <Text style={[styles.lineLabel, strong && styles.strong]}>{label}</Text>
       <Text style={[styles.value, strong && styles.strong]}>
-        ₹{value.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+        {valueText ?? `₹${(value ?? 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`}
       </Text>
     </View>
   );
@@ -112,4 +122,5 @@ const styles = StyleSheet.create({
   lineLabel: { color: JBS_THEME.colors.textSecondary },
   value: { color: JBS_THEME.colors.text, fontWeight: "800" },
   strong: { color: JBS_THEME.colors.primary, fontWeight: "900" },
+  warning: { color: JBS_THEME.colors.warning, fontSize: 11, fontWeight: "700", marginTop: JBS_THEME.spacing.md },
 });
