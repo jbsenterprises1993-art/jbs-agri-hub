@@ -24,7 +24,7 @@ Required next checks:
 6. Verify another customer cannot read it.
 7. Verify admin claim access separately.
 
-Firebase's official REST documentation states that Firebase ID tokens can authenticate Firestore REST requests and that those requests are evaluated by Firestore Security Rules. citeturn5search0
+Firebase's official REST documentation confirms that Firebase ID tokens can authenticate Firestore REST requests and that those requests are evaluated by Firestore Security Rules.
 
 ## Architecture decision
 
