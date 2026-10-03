@@ -1,6 +1,9 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
+import type { Order, OrderStatus } from "@/data/order-types";
+import { getOrders, mergeOrdersWithCloud } from "@/services/orders";
+import { JBS_THEME } from "@/theme/jbs-theme";
+import { subscribeToCurrentUserOrders } from "@/services/cloud-orders";
 import {
   ActivityIndicator,
   Alert,
@@ -12,24 +15,6 @@ import {
   View,
 } from "react-native";
 
-type OrderStatus =
-  | "Order Confirmed"
-  | "Order Processing"
-  | "Shipped"
-  | "Delivered";
-
-type Order = {
-  orderId: string;
-  name: string;
-  price: number;
-  quantity: number;
-  total: number;
-  paymentMethod: string;
-  deliveryType: string;
-  date: string;
-  status?: OrderStatus;
-};
-
 export default function MyOrdersScreen() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +23,17 @@ export default function MyOrdersScreen() {
   // latest orders load ஆகும்
   useFocusEffect(
     useCallback(() => {
-      loadOrders();
+      let unsubscribe: () => void = () => undefined;
+      loadOrders().then(() => {
+        unsubscribe = subscribeToCurrentUserOrders(
+          async (cloudOrders) => {
+            const localOrders = await getOrders();
+            setOrders(mergeOrdersWithCloud(localOrders, cloudOrders));
+          },
+          () => undefined,
+        );
+      });
+      return () => unsubscribe();
     }, [])
   );
 
@@ -50,17 +45,7 @@ export default function MyOrdersScreen() {
     try {
       setLoading(true);
 
-      const savedOrders =
-        await AsyncStorage.getItem("jbs_orders");
-
-      if (!savedOrders) {
-        setOrders([]);
-        return;
-      }
-
-      const parsedOrders: Order[] =
-        JSON.parse(savedOrders);
-
+      const parsedOrders = await getOrders();
       setOrders(parsedOrders);
     } catch (error) {
       console.log("Load orders error:", error);
@@ -363,12 +348,12 @@ function getStatusTextStyle(
 
     case "Delivered":
       return {
-        color: "#07883F",
+        color: JBS_THEME.colors.primarySoft,
       };
 
     default:
       return {
-        color: "#07883F",
+        color: JBS_THEME.colors.primarySoft,
       };
   }
 }
@@ -380,7 +365,7 @@ function getStatusTextStyle(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F1FFF6",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   content: {
@@ -398,7 +383,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 16,
     fontWeight: "700",
-    color: "#07883F",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   backButton: {
@@ -409,26 +394,26 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: 17,
     fontWeight: "800",
-    color: "#07883F",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   title: {
     textAlign: "center",
     fontSize: 31,
     fontWeight: "900",
-    color: "#07883F",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   subtitle: {
     textAlign: "center",
     fontSize: 15,
-    color: "#6B7280",
+    color: JBS_THEME.colors.textSecondary,
     marginTop: 6,
     marginBottom: 25,
   },
 
   orderCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderRadius: 22,
     padding: 20,
     marginBottom: 22,
@@ -463,7 +448,7 @@ const styles = StyleSheet.create({
   orderId: {
     fontSize: 20,
     fontWeight: "900",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
   },
 
   statusBadge: {
@@ -481,14 +466,14 @@ const styles = StyleSheet.create({
 
   divider: {
     height: 1,
-    backgroundColor: "#E5E7EB",
+    backgroundColor: JBS_THEME.colors.border,
     marginVertical: 17,
   },
 
   productName: {
     fontSize: 19,
     fontWeight: "900",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
     marginBottom: 15,
   },
 
@@ -500,12 +485,12 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 15,
-    color: "#6B7280",
+    color: JBS_THEME.colors.textSecondary,
   },
 
   value: {
     fontSize: 15,
-    color: "#111827",
+    color: JBS_THEME.colors.text,
     fontWeight: "700",
     maxWidth: "58%",
     textAlign: "right",
@@ -515,7 +500,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
+    borderTopColor: JBS_THEME.colors.border,
     paddingTop: 15,
     marginTop: 5,
   },
@@ -523,13 +508,13 @@ const styles = StyleSheet.create({
   totalLabel: {
     fontSize: 18,
     fontWeight: "900",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
   },
 
   totalValue: {
     fontSize: 21,
     fontWeight: "900",
-    color: "#07883F",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   trackButton: {
@@ -547,7 +532,7 @@ const styles = StyleSheet.create({
   },
 
   emptyCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     padding: 30,
     borderRadius: 22,
     alignItems: "center",
@@ -562,13 +547,13 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 22,
     fontWeight: "900",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
     marginTop: 15,
   },
 
   emptyText: {
     fontSize: 15,
-    color: "#6B7280",
+    color: JBS_THEME.colors.textSecondary,
     textAlign: "center",
     marginTop: 10,
     lineHeight: 22,

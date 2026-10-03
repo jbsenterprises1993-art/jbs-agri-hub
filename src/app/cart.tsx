@@ -1,6 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useState } from "react";
+import { saveCheckoutDraft } from "@/services/checkout";
+import { JBS_THEME } from "@/theme/jbs-theme";
 import {
     SafeAreaView,
     ScrollView,
@@ -198,22 +200,19 @@ export default function CartScreen() {
   // CHECKOUT
   // ---------------------------------------
 
-  const goToCheckout = () => {
+  const goToCheckout = async () => {
     if (cartItems.length === 0) {
       return;
     }
 
-    // Current checkout screen handles one product.
-    // For now send first product + total.
-
-    const firstItem = cartItems[0];
+    await saveCheckoutDraft({
+      items: cartItems,
+      total,
+    });
 
     router.push({
       pathname: "/checkout",
       params: {
-        name: firstItem.name,
-        price: String(firstItem.price),
-        quantity: String(firstItem.quantity),
         total: String(total),
       },
     });
@@ -448,18 +447,18 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#F4F8F3",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   container: {
     flex: 1,
-    backgroundColor: "#F4F8F3",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   header: {
     paddingHorizontal: 20,
     paddingVertical: 18,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
 
     flexDirection: "row",
     alignItems: "center",
@@ -477,13 +476,13 @@ const styles = StyleSheet.create({
 
   backText: {
     fontSize: 32,
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   headerSpace: {
@@ -498,12 +497,12 @@ const styles = StyleSheet.create({
   itemCount: {
     fontSize: 15,
     fontWeight: "bold",
-    color: "#374151",
+    color: JBS_THEME.colors.textSecondary,
     marginBottom: 15,
   },
 
   productCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderRadius: 18,
     padding: 18,
     marginBottom: 18,
@@ -523,7 +522,7 @@ const styles = StyleSheet.create({
   iconBox: {
     width: 75,
     height: 75,
-    backgroundColor: "#DCFCE7",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
@@ -541,13 +540,13 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   price: {
     fontSize: 21,
     fontWeight: "bold",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
     marginTop: 7,
   },
 
@@ -558,13 +557,13 @@ const styles = StyleSheet.create({
   },
 
   discount: {
-    color: "#16A34A",
+    color: JBS_THEME.colors.primary,
     fontWeight: "bold",
     marginRight: 12,
   },
 
   coin: {
-    color: "#CA8A04",
+    color: JBS_THEME.colors.warning,
     fontWeight: "bold",
   },
 
@@ -578,13 +577,13 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 10,
-    backgroundColor: "#15803D",
+    backgroundColor: JBS_THEME.colors.primary,
     alignItems: "center",
     justifyContent: "center",
   },
 
   quantityButtonText: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 23,
     fontWeight: "bold",
   },
@@ -593,14 +592,14 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: "bold",
     marginHorizontal: 18,
-    color: "#111827",
+    color: JBS_THEME.colors.text,
   },
 
   itemTotal: {
     marginTop: 14,
     fontSize: 15,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   removeButton: {
@@ -609,13 +608,13 @@ const styles = StyleSheet.create({
   },
 
   removeText: {
-    color: "#DC2626",
+    color: JBS_THEME.colors.danger,
     fontSize: 14,
     fontWeight: "bold",
   },
 
   continueShoppingButton: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderWidth: 2,
     borderColor: "#15803D",
     borderRadius: 14,
@@ -624,7 +623,7 @@ const styles = StyleSheet.create({
   },
 
   continueShoppingText: {
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -638,13 +637,13 @@ const styles = StyleSheet.create({
 
   loadingText: {
     fontSize: 17,
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     fontWeight: "bold",
   },
 
   emptyBox: {
     width: "100%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderRadius: 22,
     padding: 35,
     alignItems: "center",
@@ -667,34 +666,34 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 23,
     fontWeight: "bold",
-    color: "#222222",
+    color: JBS_THEME.colors.text,
     textAlign: "center",
   },
 
   emptyText: {
     marginTop: 12,
     fontSize: 15,
-    color: "#777777",
+    color: JBS_THEME.colors.textSecondary,
     textAlign: "center",
     lineHeight: 22,
   },
 
   shopButton: {
     marginTop: 25,
-    backgroundColor: "#15803D",
+    backgroundColor: JBS_THEME.colors.primary,
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 14,
   },
 
   shopButtonText: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 16,
     fontWeight: "bold",
   },
 
   bottom: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     paddingHorizontal: 20,
     paddingVertical: 18,
 
@@ -707,19 +706,19 @@ const styles = StyleSheet.create({
   },
 
   totalLabel: {
-    color: "#777777",
+    color: JBS_THEME.colors.textSecondary,
     fontSize: 13,
   },
 
   total: {
     fontSize: 25,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     marginTop: 3,
   },
 
   checkoutButton: {
-    backgroundColor: "#15803D",
+    backgroundColor: JBS_THEME.colors.primary,
     paddingVertical: 16,
     paddingHorizontal: 38,
     borderRadius: 14,
@@ -730,7 +729,7 @@ const styles = StyleSheet.create({
   },
 
   checkoutText: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 16,
     fontWeight: "bold",
   },

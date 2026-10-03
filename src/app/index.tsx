@@ -16,6 +16,10 @@ export default function HomeScreen() {
         <Pressable style={styles.button} onPress={() => router.push('/login')}>
           <Text style={styles.buttonText}>GET STARTED</Text>
         </Pressable>
+        <Pressable style={styles.ownerButton} onPress={() => router.push('/owner-dashboard')}>
+          <Text style={styles.ownerButtonTitle}>👑 JBS Owner Dashboard</Text>
+          <Text style={styles.ownerButtonSub}>Orders, business value & ecosystem control</Text>
+        </Pressable>
         <Pressable style={styles.progressButton} onPress={() => router.push('/live-progress')}>
           <Text style={styles.progressButtonTitle}>📊 JBS Live Progress</Text>
           <Text style={styles.progressButtonSub}>All apps development status / அனைத்து App progress</Text>
@@ -37,6 +41,9 @@ const styles = StyleSheet.create({
   description: { fontSize: 15, color: '#C9D8CE', textAlign: 'center', lineHeight: 23, marginTop: 12 },
   button: { width: '100%', backgroundColor: '#20A653', paddingVertical: 16, borderRadius: 14, marginTop: 25 },
   buttonText: { color: '#FFFFFF', textAlign: 'center', fontSize: 17, fontWeight: '900' },
+  ownerButton: { width: '100%', backgroundColor: '#1B4332', paddingVertical: 14, borderRadius: 14, marginTop: 12, borderWidth: 1, borderColor: '#4C8A62' },
+  ownerButtonTitle: { color: '#FFFFFF', textAlign: 'center', fontSize: 15, fontWeight: '900' },
+  ownerButtonSub: { color: '#BDE8CA', textAlign: 'center', fontSize: 10, marginTop: 4 },
   progressButton: { width: '100%', backgroundColor: '#163B28', paddingVertical: 14, borderRadius: 14, marginTop: 12, borderWidth: 1, borderColor: '#28633F' },
   progressButtonTitle: { color: '#FFFFFF', textAlign: 'center', fontSize: 15, fontWeight: '900' },
   progressButtonSub: { color: '#9BC7A9', textAlign: 'center', fontSize: 10, marginTop: 4 },

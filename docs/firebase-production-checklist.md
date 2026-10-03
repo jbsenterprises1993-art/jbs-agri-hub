@@ -1,0 +1,108 @@
+import {
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
+import { db, auth } from "@/firebaseConfig";
+import type { Order, OrderStatus } from "@/data/order-types";
+
+const ORDERS_COLLECTION = "orders";
+
+function toFirestoreOrder(order: Order) {
+  return {
+    ...order,
+    userId: auth.currentUser?.uid ?? null,
+    updatedAt: serverTimestamp(),
+  };
+}
+
+export async function syncOrderToCloud(order: Order): Promise<boolean> {
+  if (!auth.currentUser) return false;
+
+  try {
+    await setDoc(
+      doc(db, ORDERS_COLLECTION, order.orderId),
+      toFirestoreOrder(order),
+      { merge: true },
+    );
+    return true;
+  } catch (error) {
+    console.log("Cloud order sync skipped:", error);
+    return false;
+  }
+}
+
+export async function getCloudOrderById(
+  orderId: string,
+): Promise<Order | null> {
+  if (!auth.currentUser) return null;
+
+  try {
+    const snapshot = await getDoc(doc(db, ORDERS_COLLECTION, orderId));
+    if (!snapshot.exists()) return null;
+
+    const data = snapshot.data();
+    return {
+      ...(data as Order),
+      orderId: snapshot.id,
+    };
+  } catch (error) {
+    console.log("Cloud order read skipped:", error);
+    return null;
+  }
+}
+
+export async function syncOrderStatusToCloud(
+  orderId: string,
+  status: OrderStatus,
+): Promise<boolean> {
+  if (!auth.currentUser) return false;
+
+  try {
+    await setDoc(
+      doc(db, ORDERS_COLLECTION, orderId),
+      {
+        status,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+    return true;
+  } catch (error) {
+    console.log("Cloud order status sync skipped:", error);
+    return false;
+  }
+}
+
+export function subscribeToCloudOrders(
+  onOrders: (orders: Order[]) => void,
+  onError?: (error: Error) => void,
+) {
+  if (!auth.currentUser) return () => undefined;
+
+  return onSnapshot(
+    collection(db, ORDERS_COLLECTION),
+    (snapshot) => {
+      const orders = snapshot.docs.map((item) => ({
+        ...(item.data() as Order),
+        orderId: item.id,
+      }));
+      onOrders(orders);
+    },
+    (error) => onError?.(error),
+  );
+}
+
+export function ordersCollectionPath() {
+  return collection(db, ORDERS_COLLECTION).path;
+}
+
+
+## Security boundary
+- Customer order reads are scoped by `userId` in Firestore rules.
+- Owner-wide order reads require a trusted Firebase custom claim: `admin: true`.
+- The mobile client must never set its own admin claim or treat a local admin flag as authorization.
+- Payment authorization must remain server-side; COD is the only currently enabled payment path.

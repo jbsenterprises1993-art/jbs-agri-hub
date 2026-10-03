@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
+import { JBS_THEME } from "@/theme/jbs-theme";
 import {
   SafeAreaView,
   ScrollView,
@@ -39,7 +40,7 @@ export default function PaymentScreen() {
       ? params.transport
       : "";
 
-  const canPay = paymentMethod !== "";
+  const canPay = paymentMethod === "cod";
 
   const handlePayment = () => {
     if (!canPay) {
@@ -75,6 +76,23 @@ export default function PaymentScreen() {
             : transport !== ""
             ? transport
             : "Transport",
+        customerName:
+          typeof params.customerName === "string"
+            ? params.customerName
+            : "",
+        mobile:
+          typeof params.mobile === "string"
+            ? params.mobile
+            : "",
+        address:
+          typeof params.address === "string"
+            ? params.address
+            : "",
+        paymentStatus: "cod",
+        items:
+          typeof params.items === "string"
+            ? params.items
+            : "[]",
       },
     });
   };
@@ -174,12 +192,10 @@ export default function PaymentScreen() {
             activeOpacity={0.8}
             style={[
               styles.paymentOption,
-              paymentMethod === "upi" &&
-                styles.selectedOption,
+              styles.disabledPaymentOption,
             ]}
-            onPress={() =>
-              setPaymentMethod("upi")
-            }
+            disabled
+            onPress={() => undefined}
           >
             <View style={styles.paymentRow}>
               <Text style={styles.paymentIcon}>
@@ -192,7 +208,7 @@ export default function PaymentScreen() {
                 </Text>
 
                 <Text style={styles.paymentText}>
-                  Pay using any supported UPI app
+                  Gateway integration pending — UPI is not enabled yet
                 </Text>
               </View>
 
@@ -203,7 +219,7 @@ export default function PaymentScreen() {
                     styles.radioSelected,
                 ]}
               >
-                {paymentMethod === "upi" && (
+                {false && paymentMethod === "upi" && (
                   <View
                     style={styles.radioInner}
                   />
@@ -259,19 +275,6 @@ export default function PaymentScreen() {
 
         {/* UPI INFO */}
 
-        {paymentMethod === "upi" && (
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>
-              UPI Payment
-            </Text>
-
-            <Text style={styles.infoText}>
-              UPI payment selected.
-              Press Pay Now to continue.
-            </Text>
-          </View>
-        )}
-
         {/* COD INFO */}
 
         {paymentMethod === "cod" && (
@@ -314,7 +317,7 @@ export default function PaymentScreen() {
           <Text style={styles.payButtonText}>
             {paymentMethod === "cod"
               ? "Place Order"
-              : "Pay Now"}
+              : "UPI Unavailable"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -325,11 +328,11 @@ export default function PaymentScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F4F8F3",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   header: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     paddingHorizontal: 20,
     paddingVertical: 18,
     flexDirection: "row",
@@ -339,7 +342,7 @@ const styles = StyleSheet.create({
 
   back: {
     fontSize: 30,
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   title: {
@@ -380,7 +383,7 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#222222",
+    color: JBS_THEME.colors.text,
     marginBottom: 18,
   },
 
@@ -393,7 +396,7 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 15,
-    color: "#777777",
+    color: JBS_THEME.colors.textSecondary,
   },
 
   value: {
@@ -406,7 +409,7 @@ const styles = StyleSheet.create({
 
   line: {
     height: 1,
-    backgroundColor: "#E5E7EB",
+    backgroundColor: JBS_THEME.colors.border,
     marginVertical: 12,
   },
 
@@ -422,18 +425,22 @@ const styles = StyleSheet.create({
     color: "#166534",
   },
 
+  disabledPaymentOption: {
+    opacity: 0.55,
+  },
+
   paymentOption: {
     borderWidth: 2,
     borderColor: "#E5E7EB",
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
   },
 
   selectedOption: {
-    borderColor: "#16A34A",
-    backgroundColor: "#DCFCE7",
+    borderColor: JBS_THEME.colors.primary,
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
   },
 
   paymentRow: {

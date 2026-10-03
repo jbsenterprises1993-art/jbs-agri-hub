@@ -1,5 +1,9 @@
 import { router, useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useCallback, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import type { OrderStatus } from "@/data/order-types";
+import { getOrderById } from "@/services/orders";
+import { JBS_THEME } from "@/theme/jbs-theme";
 import {
     SafeAreaView,
     ScrollView,
@@ -8,12 +12,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-
-type OrderStatus =
-  | "Order Confirmed"
-  | "Order Processing"
-  | "Shipped"
-  | "Delivered";
 
 type Step = {
   title: OrderStatus;
@@ -36,7 +34,21 @@ export default function TrackOrderScreen() {
       ? normalizeStatus(params.status)
       : "Order Confirmed";
 
-  const currentStep = getCurrentStep(status);
+  const [liveStatus, setLiveStatus] = useState<OrderStatus>(status);
+
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+      getOrderById(orderId).then((order) => {
+        if (active && order) setLiveStatus(order.status);
+      });
+      return () => {
+        active = false;
+      };
+    }, [orderId]),
+  );
+
+  const currentStep = getCurrentStep(liveStatus);
 
   const steps: Step[] = [
     {
@@ -235,7 +247,7 @@ function getCurrentStep(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F1FFF6",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   content: {
@@ -251,19 +263,19 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#07883F",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   title: {
     fontSize: 32,
     fontWeight: "900",
     textAlign: "center",
-    color: "#07883F",
+    color: JBS_THEME.colors.primarySoft,
     marginBottom: 30,
   },
 
   orderCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderRadius: 25,
     padding: 25,
     marginBottom: 25,
@@ -280,7 +292,7 @@ const styles = StyleSheet.create({
 
   orderLabel: {
     fontSize: 17,
-    color: "#777",
+    color: JBS_THEME.colors.textSecondary,
     fontWeight: "600",
     marginBottom: 20,
   },
@@ -288,11 +300,11 @@ const styles = StyleSheet.create({
   orderId: {
     fontSize: 27,
     fontWeight: "900",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
   },
 
   trackingCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderRadius: 25,
     paddingHorizontal: 20,
     paddingVertical: 30,
@@ -321,13 +333,13 @@ const styles = StyleSheet.create({
     width: 62,
     height: 62,
     borderRadius: 31,
-    backgroundColor: "#E5E7EB",
+    backgroundColor: JBS_THEME.colors.border,
     alignItems: "center",
     justifyContent: "center",
   },
 
   activeCircle: {
-    backgroundColor: "#13A94B",
+    backgroundColor: JBS_THEME.colors.primary,
   },
 
   icon: {
@@ -339,14 +351,14 @@ const styles = StyleSheet.create({
   line: {
     width: 4,
     flex: 1,
-    backgroundColor: "#D1D5DB",
+    backgroundColor: JBS_THEME.colors.border,
     marginTop: 6,
     marginBottom: 6,
     borderRadius: 5,
   },
 
   activeLine: {
-    backgroundColor: "#13A94B",
+    backgroundColor: JBS_THEME.colors.primary,
   },
 
   stepContent: {
@@ -363,19 +375,19 @@ const styles = StyleSheet.create({
   },
 
   activeTitle: {
-    color: "#07883F",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   description: {
     fontSize: 16,
     lineHeight: 25,
-    color: "#777",
+    color: JBS_THEME.colors.textSecondary,
     fontWeight: "500",
   },
 
   currentBadge: {
     alignSelf: "flex-start",
-    backgroundColor: "#DDFBE8",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
@@ -383,7 +395,7 @@ const styles = StyleSheet.create({
   },
 
   currentBadgeText: {
-    color: "#07883F",
+    color: JBS_THEME.colors.primarySoft,
     fontSize: 13,
     fontWeight: "800",
   },

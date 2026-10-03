@@ -1,6 +1,8 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
+import type { Order, OrderStatus } from "@/data/order-types";
+import { getOrders, updateOrderStatus as persistOrderStatus } from "@/services/orders";
+import { subscribeToCloudOrders } from "@/services/cloud-orders";
 import {
   ActivityIndicator,
   Alert,
@@ -11,24 +13,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-type OrderStatus =
-  | "Order Confirmed"
-  | "Order Processing"
-  | "Shipped"
-  | "Delivered";
-
-type Order = {
-  orderId: string;
-  name: string;
-  price: number;
-  quantity: number;
-  total: number;
-  paymentMethod: string;
-  deliveryType: string;
-  date: string;
-  status?: OrderStatus;
-};
 
 const STATUS_OPTIONS: OrderStatus[] = [
   "Order Confirmed",
@@ -46,7 +30,14 @@ export default function AdminOrdersScreen() {
   // Page open ஆகும்போது latest orders load
   useFocusEffect(
     useCallback(() => {
-      loadOrders();
+      let unsubscribe: () => void = () => undefined;
+      loadOrders().then(() => {
+        unsubscribe = subscribeToCloudOrders(
+          (cloudOrders) => setOrders(cloudOrders),
+          () => undefined,
+        );
+      });
+      return () => unsubscribe();
     }, [])
   );
 
@@ -58,17 +49,7 @@ export default function AdminOrdersScreen() {
     try {
       setLoading(true);
 
-      const savedOrders =
-        await AsyncStorage.getItem("jbs_orders");
-
-      if (!savedOrders) {
-        setOrders([]);
-        return;
-      }
-
-      const parsedOrders: Order[] =
-        JSON.parse(savedOrders);
-
+      const parsedOrders = await getOrders();
       setOrders(parsedOrders);
     } catch (error) {
       console.log("Admin load error:", error);
@@ -93,27 +74,8 @@ export default function AdminOrdersScreen() {
     try {
       setUpdatingId(orderId);
 
-      const updatedOrders = orders.map(
-        (order) => {
-          if (order.orderId === orderId) {
-            return {
-              ...order,
-              status: newStatus,
-            };
-          }
-
-          return order;
-        }
-      );
-
-      // Screen update
+      const updatedOrders = await persistOrderStatus(orderId, newStatus);
       setOrders(updatedOrders);
-
-      // Save
-      await AsyncStorage.setItem(
-        "jbs_orders",
-        JSON.stringify(updatedOrders)
-      );
 
       Alert.alert(
         "Status Updated",
@@ -306,6 +268,26 @@ export default function AdminOrdersScreen() {
                 <Text style={styles.productName}>
                   {order.name || "JBS Product"}
                 </Text>
+
+                {/* ITEMS */}
+
+                {order.items && order.items.length > 0 && (
+                  <View style={styles.itemsBox}>
+                    <Text style={styles.itemsTitle}>
+                      Items ({order.items.length})
+                    </Text>
+                    {order.items.map((item) => (
+                      <View key={item.id} style={styles.itemRow}>
+                        <Text style={styles.itemName}>
+                          {item.name} × {item.quantity}
+                        </Text>
+                        <Text style={styles.itemAmount}>
+                          ₹{(item.price * item.quantity).toLocaleString("en-IN")}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
 
                 {/* DETAILS */}
 
@@ -685,6 +667,40 @@ const styles = StyleSheet.create({
     color: "#111827",
     fontWeight: "900",
     marginBottom: 16,
+  },
+
+  itemsBox: {
+    backgroundColor: "#F0FDF4",
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+  },
+
+  itemsTitle: {
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#166534",
+    marginBottom: 8,
+  },
+
+  itemRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 5,
+  },
+
+  itemName: {
+    flex: 1,
+    fontSize: 14,
+    color: "#374151",
+    marginRight: 10,
+  },
+
+  itemAmount: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#166534",
   },
 
   detailRow: {

@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 2,
+  "sourceOfTruth": "JBS Full App Ecosystem",
+  "lastReviewed": "2026-10-04",
+  "apps": [
+    {
+      "id": "agri-hub",
+      "name": "JBS Agri Hub",
+      "repoSource": "jbs-agri-hub",
+      "status": "active-source",
+      "tasks": [
+        {
+          "id": "firebase-security",
+          "name": "Firestore ownership & admin-claim security",
+          "status": "in_progress"
+        },
+        {
+          "id": "android-smoke",
+          "name": "Android customer smoke-flow validation",
+          "status": "in_progress"
+        },
+        {
+          "id": "production-boundaries",
+          "name": "Production boundary regression suite",
+          "status": "completed"
+        },
+        {
+          "id": "release-readiness",
+          "name": "Release readiness evidence",
+          "status": "in_progress"
+        }
+      ]
+    },
+    {
+      "id": "owner",
+      "name": "JBS Owner Hub",
+      "status": "prototype"
+    },
+    {
+      "id": "orchestrator",
+      "name": "JBS Orchestrator Hub",
+      "status": "prototype"
+    },
+    {
+      "id": "billing",
+      "name": "JBS Billing",
+      "status": "foundation",
+      "tasks": [
+        {
+          "id": "invoice-storage",
+          "name": "Invoice persistence & numbering",
+          "status": "completed"
+        },
+        {
+          "id": "gst",
+          "name": "GST/CGST/SGST calculation",
+          "status": "completed"
+        },
+        {
+          "id": "pdf",
+          "name": "Native PDF generation",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "accounts",
+      "name": "JBS Accounts",
+      "status": "foundation",
+      "tasks": [
+        {
+          "id": "ledger",
+          "name": "Local account ledger",
+          "status": "completed"
+        },
+        {
+          "id": "transfer",
+          "name": "Double-entry transfer records",
+          "status": "completed"
+        },
+        {
+          "id": "bank",
+          "name": "Bank integration",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "attendance",
+      "name": "JBS Attendance & Salary",
+      "status": "foundation",
+      "tasks": [
+        {
+          "id": "attendance",
+          "name": "Attendance tracking",
+          "status": "completed"
+        },
+        {
+          "id": "payroll",
+          "name": "Attendance-driven payroll foundation",
+          "status": "in_progress"
+        },
+        {
+          "id": "salary",
+          "name": "Salary execution",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "marketing",
+      "name": "JBS Marketing",
+      "status": "foundation",
+      "tasks": [
+        {
+          "id": "drafts",
+          "name": "Campaign drafts",
+          "status": "completed"
+        },
+        {
+          "id": "scheduler",
+          "name": "Scheduled post detection",
+          "status": "completed"
+        },
+        {
+          "id": "social",
+          "name": "Provider publishing",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "delivery",
+      "name": "JBS Delivery",
+      "status": "foundation",
+      "tasks": [
+        {
+          "id": "delivery",
+          "name": "Delivery workflow",
+          "status": "completed"
+        },
+        {
+          "id": "order-sync",
+          "name": "Delivery → order status sync",
+          "status": "completed"
+        },
+        {
+          "id": "tracking",
+          "name": "Live transport tracking",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "name": "JBS AI Assistant",
+      "status": "foundation",
+      "tasks": [
+        {
+          "id": "queue",
+          "name": "AI task queue",
+          "status": "in_progress"
+        },
+        {
+          "id": "permissions",
+          "name": "Explicit action permissions",
+          "status": "completed"
+        },
+        {
+          "id": "provider",
+          "name": "Model/provider integration",
+          "status": "planned"
+        },
+        {
+          "id": "voice",
+          "name": "Voice controls",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "inventory",
+      "name": "JBS Inventory",
+      "status": "foundation"
+    }
+  ],
+  "sharedContracts": [
+    "customer-types",
+    "inventory-types",
+    "order-types",
+    "billing-types",
+    "accounts-types",
+    "attendance-types",
+    "delivery-types",
+    "marketing-types",
+    "ai-types",
+    "report-types"
+  ],
+  "principles": [
+    "Reuse the existing Agri Hub source before creating duplicate implementations.",
+    "Keep shared authentication, customer, inventory, billing, order and reporting contracts consistent across apps.",
+    "Foundation means shared contracts exist; it does not mean the app is production complete.",
+    "Do not represent planned work as completed.",
+    "Production readiness requires build, runtime, Firebase and release validation."
+  ]
+}

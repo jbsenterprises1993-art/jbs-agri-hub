@@ -1,6 +1,11 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import type { OrderItem, PaymentStatus } from "@/data/order-types";
+import { saveOrder as persistOrder } from "@/services/orders";
+import { clearCheckoutDraft } from "@/services/checkout";
+import { applyOrderSale } from "@/services/inventory";
+import { JBS_THEME } from "@/theme/jbs-theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
     SafeAreaView,
     ScrollView,
@@ -9,18 +14,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-
-type Order = {
-  orderId: string;
-  name: string;
-  price: number;
-  quantity: number;
-  total: number;
-  paymentMethod: string;
-  deliveryType: string;
-  date: string;
-  status: string;
-};
 
 export default function OrderSuccessScreen() {
   const params = useLocalSearchParams();
@@ -57,69 +50,85 @@ export default function OrderSuccessScreen() {
       ? params.deliveryType
       : "Delivery";
 
+  const customerName =
+    typeof params.customerName === "string"
+      ? params.customerName
+      : undefined;
+
+  const mobile =
+    typeof params.mobile === "string"
+      ? params.mobile
+      : undefined;
+
+  const address =
+    typeof params.address === "string"
+      ? params.address
+      : undefined;
+
+  const items = useMemo<OrderItem[]>(() => {
+    if (typeof params.items !== "string") return [];
+    try {
+      const parsed: unknown = JSON.parse(params.items);
+      return Array.isArray(parsed) ? (parsed as OrderItem[]) : [];
+    } catch {
+      return [];
+    }
+  }, [params.items]);
+
+  const paymentStatus: PaymentStatus =
+    params.paymentStatus === "cod"
+      ? "cod"
+      : params.paymentStatus === "paid"
+      ? "paid"
+      : "pending";
+
   const total =
     typeof params.total === "string"
       ? Number(params.total)
       : price * quantity;
 
   useEffect(() => {
-    saveOrder();
-  }, []);
+    const order = {
+      orderId,
+      name,
+      price,
+      quantity,
+      total,
+      paymentMethod,
+      paymentStatus,
+      items,
+      deliveryType,
+      customerName,
+      mobile,
+      address,
+      date: new Date().toISOString(),
+      status: "Order Confirmed" as const,
+    };
 
-  const saveOrder = async () => {
-    try {
-      const oldOrders = await AsyncStorage.getItem(
-        "jbs_orders"
-      );
-
-      const orders: Order[] = oldOrders
-        ? JSON.parse(oldOrders)
-        : [];
-
-      const alreadyExists = orders.some(
-        (order) => order.orderId === orderId
-      );
-
-      if (alreadyExists) {
+    applyOrderSale(order)
+      .then(() => persistOrder(order))
+      .then(async () => {
+        await clearCheckoutDraft();
+        await AsyncStorage.removeItem("jbs_cart");
         setSaved(true);
-        return;
-      }
-
-      const newOrder: Order = {
-        orderId,
-        name,
-        price,
-        quantity,
-        total,
-        paymentMethod,
-        deliveryType,
-        date: new Date().toISOString(),
-        status: "Order Confirmed",
-      };
-
-      const updatedOrders = [
-        newOrder,
-        ...orders,
-      ];
-
-      await AsyncStorage.setItem(
-        "jbs_orders",
-        JSON.stringify(updatedOrders)
-      );
-
-      setSaved(true);
-
-      console.log(
-        "Order saved successfully:",
-        newOrder
-      );
-    } catch (error) {
-      console.log(
-        "Order save error:",
-        error
-      );
-    }
-  };
+      })
+      .catch((error) => {
+        console.log("Order save/inventory error:", error);
+      });
+  }, [
+    orderId,
+    name,
+    price,
+    quantity,
+    total,
+    paymentMethod,
+    paymentStatus,
+    deliveryType,
+    customerName,
+    mobile,
+    address,
+    items,
+  ]);
 
   const goHome = () => {
     router.replace("/");
@@ -232,7 +241,7 @@ export default function OrderSuccessScreen() {
 
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>
-              Total Paid
+              Order Total
             </Text>
 
             <Text style={styles.totalValue}>
@@ -245,7 +254,7 @@ export default function OrderSuccessScreen() {
 
         <View style={styles.paymentSuccessBox}>
           <Text style={styles.paymentSuccessText}>
-            ✓ Payment / Order Confirmed
+            ✓ Order Confirmed
           </Text>
         </View>
 
@@ -314,7 +323,7 @@ export default function OrderSuccessScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#F4FFF6",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   container: {
@@ -329,7 +338,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: "#16A34A",
+    backgroundColor: JBS_THEME.colors.primary,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
@@ -354,7 +363,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     textAlign: "center",
   },
 
@@ -362,21 +371,21 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 17,
     fontWeight: "700",
-    color: "#222222",
+    color: JBS_THEME.colors.text,
     textAlign: "center",
   },
 
   message: {
     marginTop: 6,
     fontSize: 14,
-    color: "#666666",
+    color: JBS_THEME.colors.textSecondary,
     textAlign: "center",
     marginBottom: 25,
   },
 
   card: {
     width: "100%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderRadius: 18,
     padding: 20,
 
@@ -393,7 +402,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
     marginBottom: 18,
   },
 
@@ -414,7 +423,7 @@ const styles = StyleSheet.create({
     flex: 1.3,
     fontSize: 14,
     fontWeight: "600",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
     textAlign: "right",
   },
 
@@ -434,20 +443,20 @@ const styles = StyleSheet.create({
   totalLabel: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
   },
 
   totalValue: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   paymentSuccessBox: {
     width: "100%",
-    backgroundColor: "#DCFCE7",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     borderWidth: 1,
-    borderColor: "#86EFAC",
+    borderColor: JBS_THEME.colors.primary,
     borderRadius: 14,
     paddingVertical: 15,
     paddingHorizontal: 15,
@@ -466,19 +475,19 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingVertical: 12,
     borderRadius: 12,
-    backgroundColor: "#ECFDF5",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
   },
 
   savedText: {
     textAlign: "center",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     fontSize: 14,
     fontWeight: "bold",
   },
 
   infoBox: {
     width: "100%",
-    backgroundColor: "#F0FDF4",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     borderRadius: 15,
     padding: 17,
     marginTop: 15,
@@ -487,7 +496,7 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 17,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     marginBottom: 7,
   },
 
@@ -516,7 +525,7 @@ const styles = StyleSheet.create({
   homeButton: {
     width: "100%",
     height: 55,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderWidth: 2,
     borderColor: "#15803D",
     borderRadius: 14,
@@ -526,7 +535,7 @@ const styles = StyleSheet.create({
   },
 
   homeButtonText: {
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     fontSize: 17,
     fontWeight: "bold",
   },
@@ -542,7 +551,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 14,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     letterSpacing: 1.5,
   },
 });

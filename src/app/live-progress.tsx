@@ -1,4 +1,6 @@
 import React, { useMemo, useState } from 'react';
+import { JBS_ECOSYSTEM } from '@/data/jbs-ecosystem';
+import { buildOrchestratorSummary } from '@/services/orchestrator';
 import {
   Pressable,
   SafeAreaView,
@@ -23,101 +25,7 @@ type AppModule = {
   tasks: Task[];
 };
 
-const initialModules: AppModule[] = [
-  {
-    id: 'agri-hub',
-    name: 'JBS Agri Hub',
-    tamil: 'வாடிக்கையாளர் App',
-    tasks: [
-      { id: 'home', name: 'Home screen', status: 'completed' },
-      { id: 'login', name: 'Login / OTP flow', status: 'completed' },
-      { id: 'products', name: 'Products & Sprayers', status: 'completed' },
-      { id: 'cart', name: 'Cart', status: 'completed' },
-      { id: 'checkout', name: 'Checkout', status: 'completed' },
-      { id: 'payment', name: 'Payment', status: 'completed' },
-      { id: 'orders', name: 'Orders & tracking', status: 'completed' },
-      { id: 'admin-orders', name: 'Admin orders screen', status: 'completed' },
-      { id: 'firebase', name: 'Production Firebase validation', status: 'in_progress' },
-      { id: 'release', name: 'Production release validation', status: 'in_progress' },
-    ],
-  },
-  {
-    id: 'owner',
-    name: 'JBS Owner App',
-    tamil: 'Owner Control',
-    tasks: [
-      { id: 'owner-dashboard', name: 'Owner dashboard', status: 'in_progress' },
-      { id: 'owner-kpi', name: 'Live business KPIs', status: 'planned' },
-      { id: 'owner-controls', name: 'Owner controls', status: 'planned' },
-    ],
-  },
-  {
-    id: 'orchestrator',
-    name: 'JBS Orchestrator',
-    tamil: 'Ecosystem Control',
-    tasks: [
-      { id: 'orchestrator-dashboard', name: 'Orchestrator dashboard', status: 'completed' },
-      { id: 'task-engine', name: 'AI task queue', status: 'in_progress' },
-      { id: 'dependencies', name: 'Dependency tracking', status: 'in_progress' },
-      { id: 'release-checks', name: 'Release checklist', status: 'planned' },
-    ],
-  },
-  {
-    id: 'billing',
-    name: 'JBS Billing',
-    tamil: 'Billing',
-    tasks: [
-      { id: 'invoice', name: 'Invoice / GST workflow', status: 'planned' },
-      { id: 'pdf', name: 'Bill PDF', status: 'planned' },
-    ],
-  },
-  {
-    id: 'attendance',
-    name: 'JBS Attendance',
-    tamil: 'Attendance & Salary',
-    tasks: [
-      { id: 'attendance-core', name: 'Attendance tracking', status: 'planned' },
-      { id: 'salary', name: 'Salary automation', status: 'planned' },
-    ],
-  },
-  {
-    id: 'accounts',
-    name: 'JBS Accounts',
-    tamil: 'Accounts',
-    tasks: [
-      { id: 'accounts-core', name: 'Accounts management', status: 'planned' },
-      { id: 'bank-rules', name: 'Bank transfer rules', status: 'planned' },
-    ],
-  },
-  {
-    id: 'marketing',
-    name: 'JBS Marketing',
-    tamil: 'Marketing',
-    tasks: [
-      { id: 'posts', name: 'Post generation', status: 'planned' },
-      { id: 'social', name: 'Social publishing', status: 'planned' },
-      { id: 'marketing-ai', name: 'Marketing AI assistant', status: 'planned' },
-    ],
-  },
-  {
-    id: 'delivery',
-    name: 'JBS Delivery',
-    tamil: 'Delivery & Tracking',
-    tasks: [
-      { id: 'delivery-core', name: 'Delivery workflow', status: 'planned' },
-      { id: 'tracking', name: 'Transport tracking', status: 'planned' },
-    ],
-  },
-  {
-    id: 'ai',
-    name: 'JBS AI',
-    tamil: 'AI Assistant',
-    tasks: [
-      { id: 'ai-owner', name: 'Owner AI assistant', status: 'planned' },
-      { id: 'ai-voice', name: 'Voice controls', status: 'planned' },
-    ],
-  },
-];
+const initialModules = JBS_ECOSYSTEM;
 
 const statusLabel: Record<Status, string> = {
   completed: 'Completed',
@@ -137,8 +45,8 @@ function moduleProgress(module: AppModule) {
 
 export default function LiveProgressScreen() {
   const [filter, setFilter] = useState<'all' | Status>('all');
-  const [modules, setModules] = useState(initialModules);
-  const [lastSynced, setLastSynced] = useState(new Date());
+  const modules = initialModules;
+  const orchestratorSummary = buildOrchestratorSummary(modules);
 
   const totals = useMemo(() => {
     const tasks = modules.flatMap((item) => item.tasks);
@@ -155,25 +63,6 @@ export default function LiveProgressScreen() {
     return module.tasks.some((task) => task.status === filter);
   });
 
-  const refresh = () => setLastSynced(new Date());
-
-  const markNextInProgressCompleted = (moduleId: string) => {
-    setModules((current) =>
-      current.map((module) => {
-        if (module.id !== moduleId) return module;
-        let changed = false;
-        const tasks = module.tasks.map((task) => {
-          if (!changed && task.status === 'in_progress') {
-            changed = true;
-            return { ...task, status: 'completed' as Status };
-          }
-          return task;
-        });
-        return { ...module, tasks };
-      }),
-    );
-    setLastSynced(new Date());
-  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -181,11 +70,11 @@ export default function LiveProgressScreen() {
         <View style={styles.headerRow}>
           <View>
             <Text style={styles.eyebrow}>JBS ECOSYSTEM</Text>
-            <Text style={styles.title}>Live Progress</Text>
+            <Text style={styles.title}>Development Progress</Text>
             <Text style={styles.subtitle}>Apps வேலை நிலை / Development status</Text>
           </View>
-          <Pressable style={styles.refresh} onPress={refresh}>
-            <Text style={styles.refreshText}>↻</Text>
+          <Pressable style={styles.refresh} onPress={() => undefined} accessibilityRole="button" accessibilityLabel="Progress source is static">
+            <Text style={styles.refreshText}>✓</Text>
           </Pressable>
         </View>
 
@@ -199,7 +88,10 @@ export default function LiveProgressScreen() {
             <Text style={styles.heroText}>
               {totals.completed} of {totals.total} tracked tasks completed
             </Text>
-            <Text style={styles.sync}>Last sync: {lastSynced.toLocaleTimeString()}</Text>
+            <Text style={styles.heroText}>
+              Active: {orchestratorSummary.activeTasks} • Blocked: {orchestratorSummary.blockedTasks}
+            </Text>
+            <Text style={styles.sync}>Source: JBS ecosystem manifest • reviewed 03 Oct 2026</Text>
           </View>
         </View>
 
@@ -227,7 +119,9 @@ export default function LiveProgressScreen() {
           return (
             <View key={module.id} style={styles.card}>
               <View style={styles.cardTop}>
-                <View style={styles.appIcon}><Text style={styles.appIconText}>J</Text></View>
+                <View style={styles.appIcon}>
+                  <Text style={styles.appIconText}>J</Text>
+                </View>
                 <View style={styles.appNameWrap}>
                   <Text style={styles.appName}>{module.name}</Text>
                   <Text style={styles.appTamil}>{module.tamil}</Text>
@@ -247,12 +141,9 @@ export default function LiveProgressScreen() {
               </View>
 
               {inProgress && (
-                <Pressable
-                  style={styles.action}
-                  onPress={() => markNextInProgressCompleted(module.id)}
-                >
-                  <Text style={styles.actionText}>Mark next task completed</Text>
-                </Pressable>
+                <View style={styles.action}>
+                  <Text style={styles.actionText}>Status comes from JBS ecosystem source</Text>
+                </View>
               )}
             </View>
           );
