@@ -46,7 +46,9 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "test:firestore-rules": "node ./scripts/validate-firestore-rules.mjs",
-    "test:customer-flow": "node ./scripts/validate-customer-flow.mjs"
+    "test:customer-flow": "node ./scripts/validate-customer-flow.mjs",
+    "test:production-boundaries": "node ./scripts/validate-production-boundaries.mjs",
+    "test:regression": "npm run test:firestore-rules && npm run test:customer-flow && npm run test:production-boundaries"
   },
   "private": true
 }
