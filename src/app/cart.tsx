@@ -199,7 +199,7 @@ export default function CartScreen() {
   // CHECKOUT
   // ---------------------------------------
 
-  const goToCheckout = () => {
+  const goToCheckout = async () => {
     if (cartItems.length === 0) {
       return;
     }
