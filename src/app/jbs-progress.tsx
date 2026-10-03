@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View, type DimensionValue } from "react-native";
 
 const phases = [
   ["Foundation & architecture", 100, "Ready"],
@@ -31,7 +31,7 @@ export default function JBSProgress() {
       {phases.map(([name, value, status]) => (
         <View key={name} style={s.phase}>
           <View style={s.row}><Text style={s.name}>{name}</Text><Text style={s.percent}>{value}%</Text></View>
-          <View style={s.track}><View style={[s.fill, { width: String(value) + "%" }]} /></View>
+          <View style={s.track}><View style={[s.fill, { width: (String(value) + "%") as DimensionValue }]} /></View>
           <Text style={s.status}>{status}</Text>
         </View>
       ))}
