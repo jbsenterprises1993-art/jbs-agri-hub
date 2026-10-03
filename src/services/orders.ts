@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Order, OrderStatus } from "@/data/order-types";
+import { syncOrderStatusToCloud, syncOrderToCloud } from "@/services/cloud-orders";
 
 export const ORDERS_STORAGE_KEY = "jbs_orders";
 
@@ -43,6 +44,8 @@ export async function saveOrder(order: Order): Promise<void> {
     ORDERS_STORAGE_KEY,
     JSON.stringify([order, ...withoutDuplicate]),
   );
+
+  await syncOrderToCloud(order);
 }
 
 export async function updateOrderStatus(
@@ -58,6 +61,8 @@ export async function updateOrderStatus(
     ORDERS_STORAGE_KEY,
     JSON.stringify(updated),
   );
+
+  await syncOrderStatusToCloud(orderId, status);
 
   return updated;
 }
