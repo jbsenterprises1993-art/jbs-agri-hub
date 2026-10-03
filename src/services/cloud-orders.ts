@@ -1,5 +1,7 @@
 import {
   collection,
+  query,
+  where,
   doc,
   getDoc,
   onSnapshot,
@@ -75,6 +77,31 @@ export async function syncOrderStatusToCloud(
     console.log("Cloud order status sync skipped:", error);
     return false;
   }
+}
+
+export function subscribeToCurrentUserOrders(
+  onOrders: (orders: Order[]) => void,
+  onError?: (error: Error) => void,
+) {
+  const userId = auth.currentUser?.uid;
+  if (!userId) return () => undefined;
+
+  const userOrdersQuery = query(
+    collection(db, ORDERS_COLLECTION),
+    where("userId", "==", userId),
+  );
+
+  return onSnapshot(
+    userOrdersQuery,
+    (snapshot) => {
+      const orders = snapshot.docs.map((item) => ({
+        ...(item.data() as Order),
+        orderId: item.id,
+      }));
+      onOrders(orders);
+    },
+    (error) => onError?.(error),
+  );
 }
 
 export function subscribeToCloudOrders(
