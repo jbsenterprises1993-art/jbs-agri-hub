@@ -2,6 +2,7 @@ import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
 import type { Order, OrderStatus } from "@/data/order-types";
 import { getOrders } from "@/services/orders";
+import { subscribeToCurrentUserOrders } from "@/services/cloud-orders";
 import {
   ActivityIndicator,
   Alert,
@@ -21,7 +22,14 @@ export default function MyOrdersScreen() {
   // latest orders load ஆகும்
   useFocusEffect(
     useCallback(() => {
-      loadOrders();
+      let unsubscribe: () => void = () => undefined;
+      loadOrders().then(() => {
+        unsubscribe = subscribeToCurrentUserOrders(
+          (cloudOrders) => setOrders(cloudOrders),
+          () => undefined,
+        );
+      });
+      return () => unsubscribe();
     }, [])
   );
 
