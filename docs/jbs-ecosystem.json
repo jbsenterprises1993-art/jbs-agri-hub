@@ -1,21 +1,34 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "sourceOfTruth": "JBS Full App Ecosystem",
   "lastReviewed": "2026-10-03",
   "apps": [
     {"id":"agri-hub","name":"JBS Agri Hub","repoSource":"jbs-agri-hub","status":"active-source"},
     {"id":"owner","name":"JBS Owner Hub","status":"prototype"},
     {"id":"orchestrator","name":"JBS Orchestrator Hub","status":"prototype"},
-    {"id":"billing","name":"JBS Billing","status":"planned"},
-    {"id":"accounts","name":"JBS Accounts","status":"planned"},
-    {"id":"attendance","name":"JBS Attendance & Salary","status":"planned"},
-    {"id":"marketing","name":"JBS Marketing","status":"planned"},
-    {"id":"delivery","name":"JBS Delivery","status":"planned"},
-    {"id":"ai","name":"JBS AI Assistant","status":"planned"}
+    {"id":"billing","name":"JBS Billing","status":"foundation"},
+    {"id":"accounts","name":"JBS Accounts","status":"foundation"},
+    {"id":"attendance","name":"JBS Attendance & Salary","status":"foundation"},
+    {"id":"marketing","name":"JBS Marketing","status":"foundation"},
+    {"id":"delivery","name":"JBS Delivery","status":"foundation"},
+    {"id":"ai","name":"JBS AI Assistant","status":"foundation"}
+  ],
+  "sharedContracts": [
+    "customer-types",
+    "inventory-types",
+    "order-types",
+    "billing-types",
+    "accounts-types",
+    "attendance-types",
+    "delivery-types",
+    "marketing-types",
+    "ai-types",
+    "report-types"
   ],
   "principles": [
     "Reuse the existing Agri Hub source before creating duplicate implementations.",
-    "Keep shared authentication, data contracts, billing, inventory and reporting consistent across apps.",
+    "Keep shared authentication, customer, inventory, billing, order and reporting contracts consistent across apps.",
+    "Foundation means shared contracts exist; it does not mean the app is production complete.",
     "Do not represent planned work as completed.",
     "Production readiness requires build, runtime, Firebase and release validation."
   ]
