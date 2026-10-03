@@ -19,6 +19,8 @@ const requiredMarkers = [
   ["COD boundary", "src/app/payment.tsx", 'paymentMethod === "cod"'],
   ["order persistence", "src/app/order-success.tsx", "persistOrder"],
   ["inventory sale", "src/app/order-success.tsx", "applyOrderSale"],
+  ["order save-state handling", "src/app/order-success.tsx", 'useState<"saving" | "saved" | "failed">'],
+  ["order failure state", "src/app/order-success.tsx", 'setSaveState("failed")'],
   ["my orders", "src/app/my-orders.tsx", "subscribeToCurrentUserOrders"],
   ["tracking", "src/app/track-order.tsx", "orderId"],
 ];
