@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
   eyebrow: { color: JBS_THEME.colors.primarySoft, fontSize: 11, fontWeight: "900", letterSpacing: 2 },
   title: { color: JBS_THEME.colors.text, fontSize: 28, fontWeight: "900", marginTop: 4 },
   note: { color: JBS_THEME.colors.textSecondary, fontSize: 12, lineHeight: 18, marginVertical: JBS_THEME.spacing.lg },
-  warning: { color: JBS_THEME.colors.warning, fontSize: 11, fontWeight: "700", marginTop: JBS_THEME.spacing.md },
   inputCard: {
     backgroundColor: JBS_THEME.colors.surface,
     borderRadius: JBS_THEME.radius.lg,
