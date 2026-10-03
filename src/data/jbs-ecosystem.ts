@@ -14,6 +14,7 @@ export const JBS_ECOSYSTEM: JbsApp[] = [
     {id:"checkout",name:"Checkout",status:"completed"},{id:"payment",name:"Payment",status:"completed"},
     {id:"orders",name:"Orders & tracking",status:"completed"},{id:"admin-orders",name:"Admin orders screen",status:"completed"},
     {id:"firebase-audit",name:"Firebase auth/cloud boundary audit",status:"completed"},
+    {id:"firebase-bridge",name:"Native Auth → Firestore REST bridge",status:"in_progress"},
     {id:"integration-tests",name:"TypeScript integration validation",status:"in_progress"},
     {id:"firebase",name:"Production Firebase validation",status:"blocked"},
     {id:"release",name:"Production release validation",status:"in_progress"}]},
