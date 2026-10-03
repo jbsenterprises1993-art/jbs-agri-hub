@@ -19,7 +19,7 @@ import {
 export default function OrderSuccessScreen() {
   const params = useLocalSearchParams();
 
-  const [saved, setSaved] = useState(false);
+  const [saveState, setSaveState] = useState<"saving" | "saved" | "failed">("saving");
 
   const orderId =
     typeof params.orderId === "string"
@@ -110,15 +110,17 @@ export default function OrderSuccessScreen() {
       status: "Order Confirmed" as const,
     };
 
+    setSaveState("saving");
     applyOrderSale(order)
       .then(() => persistOrder(order))
       .then(async () => {
         await clearCheckoutDraft();
         await AsyncStorage.removeItem("jbs_cart");
-        setSaved(true);
+        setSaveState("saved");
       })
       .catch((error) => {
         console.log("Order save/inventory error:", error);
+        setSaveState("failed");
       });
   }, [
     orderId,
@@ -160,7 +162,7 @@ export default function OrderSuccessScreen() {
         {/* TITLE */}
 
         <Text style={styles.title}>
-          Order Successful!
+          {saveState === "saved" ? "Order Successful!" : "Order Processing"}
         </Text>
 
         <Text style={styles.thankYou}>
@@ -168,7 +170,11 @@ export default function OrderSuccessScreen() {
         </Text>
 
         <Text style={styles.message}>
-          Your order has been placed successfully.
+          {saveState === "saved"
+            ? "Your order has been placed successfully."
+            : saveState === "failed"
+            ? "We could not complete the order save. Please contact JBS before retrying."
+            : "We are securely saving your order details."}
         </Text>
 
         {/* ORDER DETAILS */}
@@ -259,7 +265,11 @@ export default function OrderSuccessScreen() {
 
         <View style={styles.paymentSuccessBox}>
           <Text style={styles.paymentSuccessText}>
-            ✓ Order Confirmed
+            {saveState === "saved"
+              ? "✓ Order Confirmed"
+              : saveState === "failed"
+              ? "⚠ Order needs attention"
+              : "⏳ Confirming order..."}
           </Text>
         </View>
 
@@ -267,8 +277,10 @@ export default function OrderSuccessScreen() {
 
         <View style={styles.savedBox}>
           <Text style={styles.savedText}>
-            {saved
+            {saveState === "saved"
               ? "✓ Order details saved"
+              : saveState === "failed"
+              ? "⚠ Order was not fully saved"
               : "Saving order details..."}
           </Text>
         </View>
@@ -281,12 +293,18 @@ export default function OrderSuccessScreen() {
           </Text>
 
           <Text style={styles.infoText}>
-            Your order details have been saved.
+            {saveState === "saved"
+              ? "Your order details have been saved."
+              : saveState === "failed"
+              ? "Please contact JBS support before placing the same order again."
+              : "Your order is being securely confirmed."}
           </Text>
 
-          <Text style={styles.infoText}>
-            You can check your order status from My Orders.
-          </Text>
+          {saveState === "saved" && (
+            <Text style={styles.infoText}>
+              You can check your order status from My Orders.
+            </Text>
+          )}
         </View>
 
         {/* MY ORDERS */}
