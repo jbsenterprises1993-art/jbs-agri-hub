@@ -86,4 +86,5 @@ These must not be represented as production-enabled features until their provide
 
 - `docs/2-day-final-launch-sprint.md` — final launch execution plan
 - `docs/day-10-release-readiness.md` — release gates and blockers
+- `docs/android-release-runbook.md` — final Android runtime, AAB and Play Console sequence
 - `docs/jbs-ecosystem.json` — ecosystem source of truth
