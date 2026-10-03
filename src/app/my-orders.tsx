@@ -1,7 +1,7 @@
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
 import type { Order, OrderStatus } from "@/data/order-types";
-import { getOrders } from "@/services/orders";
+import { getOrders, mergeOrdersWithCloud } from "@/services/orders";
 import { JBS_THEME } from "@/theme/jbs-theme";
 import { subscribeToCurrentUserOrders } from "@/services/cloud-orders";
 import {
@@ -26,7 +26,7 @@ export default function MyOrdersScreen() {
       let unsubscribe: () => void = () => undefined;
       loadOrders().then(() => {
         unsubscribe = subscribeToCurrentUserOrders(
-          (cloudOrders) => setOrders(cloudOrders),
+          async (cloudOrders) => {\n            const localOrders = await getOrders();\n            setOrders(mergeOrdersWithCloud(localOrders, cloudOrders));\n          },
           () => undefined,
         );
       });
