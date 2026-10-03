@@ -27,6 +27,15 @@ Reviewed: 2026-10-04
 5. Re-run TypeScript + regression CI after fixes.
 
 ## Day 2 — Production Build + Release Validation
+
+### Current execution status
+- [x] Release configuration preflight added to CI.
+- [x] Final regression includes release configuration validation.
+- [x] Latest main CI passed TypeScript + regression + release configuration checks.
+- [ ] Production EAS AAB build — intentionally not triggered automatically.
+- [ ] Real Android production-build smoke test.
+- [ ] Firebase two-account runtime authorization test.
+- [ ] Play Console owner submission.
 1. Final regression after Day 1 fixes.
 2. EAS production AAB build.
 3. Install/test production build on Android.
