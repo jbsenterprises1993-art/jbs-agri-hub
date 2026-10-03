@@ -70,7 +70,7 @@ export default function LiveProgressScreen() {
         <View style={styles.headerRow}>
           <View>
             <Text style={styles.eyebrow}>JBS ECOSYSTEM</Text>
-            <Text style={styles.title}>Live Progress</Text>
+            <Text style={styles.title}>Development Progress</Text>
             <Text style={styles.subtitle}>Apps வேலை நிலை / Development status</Text>
           </View>
           <Pressable style={styles.refresh} onPress={() => undefined} accessibilityRole="button" accessibilityLabel="Progress source is static">
