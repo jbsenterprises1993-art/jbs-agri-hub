@@ -261,6 +261,26 @@ export default function AdminOrdersScreen() {
                   {order.name || "JBS Product"}
                 </Text>
 
+                {/* ITEMS */}
+
+                {order.items && order.items.length > 0 && (
+                  <View style={styles.itemsBox}>
+                    <Text style={styles.itemsTitle}>
+                      Items ({order.items.length})
+                    </Text>
+                    {order.items.map((item) => (
+                      <View key={item.id} style={styles.itemRow}>
+                        <Text style={styles.itemName}>
+                          {item.name} × {item.quantity}
+                        </Text>
+                        <Text style={styles.itemAmount}>
+                          ₹{(item.price * item.quantity).toLocaleString("en-IN")}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+
                 {/* DETAILS */}
 
                 <View style={styles.detailRow}>
@@ -639,6 +659,40 @@ const styles = StyleSheet.create({
     color: "#111827",
     fontWeight: "900",
     marginBottom: 16,
+  },
+
+  itemsBox: {
+    backgroundColor: "#F0FDF4",
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+  },
+
+  itemsTitle: {
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#166534",
+    marginBottom: 8,
+  },
+
+  itemRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 5,
+  },
+
+  itemName: {
+    flex: 1,
+    fontSize: 14,
+    color: "#374151",
+    marginRight: 10,
+  },
+
+  itemAmount: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#166534",
   },
 
   detailRow: {
