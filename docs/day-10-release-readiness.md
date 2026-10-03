@@ -31,6 +31,13 @@ Reviewed: 2026-10-04
 8. Production EAS build/AAB validation has not been run from this checkpoint.
 9. Play Store submission remains a deliberate owner action.
 
+## Day 2 execution update
+
+- Release configuration preflight is now part of the regression suite.
+- Latest main CI passed TypeScript and the complete automated regression suite.
+- The production EAS build remains a manual/owner-controlled action because it can consume paid EAS build capacity.
+- Real Android and Firebase authorization remain runtime-only gates and are not marked passed without evidence.
+
 ## Release gates
 
 - [x] Source-level Firestore rules contract
