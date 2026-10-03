@@ -14,16 +14,20 @@ import { getOrders } from "@/services/orders";
 import { subscribeToCloudOrders } from "@/services/cloud-orders";
 import { buildBusinessMetric } from "@/services/business-reports";
 import { isLowStock } from "@/services/inventory";
+import { getInventory } from "@/services/inventory-storage";
 import { getOwnerControlSummary } from "@/services/owner-controls";
 import type { InventoryItem } from "@/data/inventory-types";
 
 export default function OwnerDashboardScreen() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
 
   const load = useCallback(async () => {
     setLoading(true);
-    setOrders(await getOrders());
+    const [nextOrders, nextInventory] = await Promise.all([getOrders(), getInventory()]);
+    setOrders(nextOrders);
+    setInventory(nextInventory);
     setLoading(false);
   }, []);
 
@@ -46,8 +50,7 @@ export default function OwnerDashboardScreen() {
   const delivered = orders.filter((order) => order.status === "Delivered").length;
   const revenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
   const report = buildBusinessMetric(orders, "daily", new Date().toISOString().slice(0, 10), new Date().toISOString().slice(0, 10));
-  const inventoryPreview: InventoryItem[] = [];
-  const lowStockCount = inventoryPreview.filter(isLowStock).length;
+  const lowStockCount = inventory.filter(isLowStock).length;
   const controlSummary = getOwnerControlSummary();
 
   return (
