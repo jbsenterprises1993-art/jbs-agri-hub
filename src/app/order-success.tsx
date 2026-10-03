@@ -1,6 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
+import type { Order, PaymentStatus } from "@/data/order-types";
+import { saveOrder as persistOrder } from "@/services/orders";
 import {
     SafeAreaView,
     ScrollView,
@@ -9,18 +10,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-
-type Order = {
-  orderId: string;
-  name: string;
-  price: number;
-  quantity: number;
-  total: number;
-  paymentMethod: string;
-  deliveryType: string;
-  date: string;
-  status: string;
-};
 
 export default function OrderSuccessScreen() {
   const params = useLocalSearchParams();
@@ -57,69 +46,64 @@ export default function OrderSuccessScreen() {
       ? params.deliveryType
       : "Delivery";
 
+  const customerName =
+    typeof params.customerName === "string"
+      ? params.customerName
+      : undefined;
+
+  const mobile =
+    typeof params.mobile === "string"
+      ? params.mobile
+      : undefined;
+
+  const address =
+    typeof params.address === "string"
+      ? params.address
+      : undefined;
+
+  const paymentStatus: PaymentStatus =
+    params.paymentStatus === "cod"
+      ? "cod"
+      : params.paymentStatus === "paid"
+      ? "paid"
+      : "pending";
+
   const total =
     typeof params.total === "string"
       ? Number(params.total)
       : price * quantity;
 
   useEffect(() => {
-    saveOrder();
-  }, []);
-
-  const saveOrder = async () => {
-    try {
-      const oldOrders = await AsyncStorage.getItem(
-        "jbs_orders"
-      );
-
-      const orders: Order[] = oldOrders
-        ? JSON.parse(oldOrders)
-        : [];
-
-      const alreadyExists = orders.some(
-        (order) => order.orderId === orderId
-      );
-
-      if (alreadyExists) {
-        setSaved(true);
-        return;
-      }
-
-      const newOrder: Order = {
-        orderId,
-        name,
-        price,
-        quantity,
-        total,
-        paymentMethod,
-        deliveryType,
-        date: new Date().toISOString(),
-        status: "Order Confirmed",
-      };
-
-      const updatedOrders = [
-        newOrder,
-        ...orders,
-      ];
-
-      await AsyncStorage.setItem(
-        "jbs_orders",
-        JSON.stringify(updatedOrders)
-      );
-
-      setSaved(true);
-
-      console.log(
-        "Order saved successfully:",
-        newOrder
-      );
-    } catch (error) {
-      console.log(
-        "Order save error:",
-        error
-      );
-    }
-  };
+    persistOrder({
+      orderId,
+      name,
+      price,
+      quantity,
+      total,
+      paymentMethod,
+      paymentStatus,
+      deliveryType,
+      customerName,
+      mobile,
+      address,
+      date: new Date().toISOString(),
+      status: "Order Confirmed",
+    })
+      .then(() => setSaved(true))
+      .catch((error) => console.log("Order save error:", error));
+  }, [
+    orderId,
+    name,
+    price,
+    quantity,
+    total,
+    paymentMethod,
+    paymentStatus,
+    deliveryType,
+    customerName,
+    mobile,
+    address,
+  ]);
 
   const goHome = () => {
     router.replace("/");
@@ -232,7 +216,7 @@ export default function OrderSuccessScreen() {
 
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>
-              Total Paid
+              Order Total
             </Text>
 
             <Text style={styles.totalValue}>
@@ -245,7 +229,7 @@ export default function OrderSuccessScreen() {
 
         <View style={styles.paymentSuccessBox}>
           <Text style={styles.paymentSuccessText}>
-            ✓ Payment / Order Confirmed
+            ✓ Order Confirmed
           </Text>
         </View>
 
