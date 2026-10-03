@@ -51,9 +51,8 @@ export default function BillingScreen() {
           <Text style={styles.sectionTitle}>Invoice Summary</Text>
           <Line label="Customer" valueText={customerName.trim() || "Walk-in Customer"} />
           <Line label="Subtotal" value={totals.subtotal} />
-          <Line label="Customer" valueText={customerName.trim() || "Walk-in Customer"} />
-          <Line label="CGST (" + gstPercent / 2 + "%)" value={totals.gstTotal / 2} />
-          <Line label="SGST (" + gstPercent / 2 + "%)" value={totals.gstTotal / 2} />
+          <Line label={`CGST (${gstPercent / 2}%)`} value={totals.gstTotal / 2} />
+          <Line label={`SGST (${gstPercent / 2}%)`} value={totals.gstTotal / 2} />
           <Line label="GST Total" value={totals.gstTotal} />
           <Line label="Grand Total" value={totals.grandTotal} strong />
         </View>
