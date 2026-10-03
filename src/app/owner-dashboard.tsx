@@ -14,6 +14,7 @@ import { getOrders } from "@/services/orders";
 import { subscribeToCloudOrders } from "@/services/cloud-orders";
 import { buildBusinessMetric } from "@/services/business-reports";
 import { isLowStock } from "@/services/inventory";
+import { getOwnerControlSummary } from "@/services/owner-controls";
 import type { InventoryItem } from "@/data/inventory-types";
 
 export default function OwnerDashboardScreen() {
@@ -47,6 +48,7 @@ export default function OwnerDashboardScreen() {
   const report = buildBusinessMetric(orders, "daily", new Date().toISOString().slice(0, 10), new Date().toISOString().slice(0, 10));
   const inventoryPreview: InventoryItem[] = [];
   const lowStockCount = inventoryPreview.filter(isLowStock).length;
+  const controlSummary = getOwnerControlSummary();
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -75,6 +77,7 @@ export default function OwnerDashboardScreen() {
               <Metric label="Order Value" value={`₹${revenue.toLocaleString("en-IN")}`} />
               <Metric label="Sales KPI" value={`₹${report.sales.toLocaleString("en-IN")}`} />
               <Metric label="Low Stock" value={String(lowStockCount)} />
+              <Metric label="Dev Progress" value={`${controlSummary.progressPercent}%`} />
             </View>
 
             <View style={styles.card}>
