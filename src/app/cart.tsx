@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useState } from "react";
+import { saveCheckoutDraft } from "@/services/checkout";
 import {
     SafeAreaView,
     ScrollView,
@@ -203,17 +204,14 @@ export default function CartScreen() {
       return;
     }
 
-    // Current checkout screen handles one product.
-    // For now send first product + total.
-
-    const firstItem = cartItems[0];
+    await saveCheckoutDraft({
+      items: cartItems,
+      total,
+    });
 
     router.push({
       pathname: "/checkout",
       params: {
-        name: firstItem.name,
-        price: String(firstItem.price),
-        quantity: String(firstItem.quantity),
         total: String(total),
       },
     });
