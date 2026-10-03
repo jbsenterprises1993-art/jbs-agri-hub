@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "sourceOfTruth": "JBS Full App Ecosystem",
+  "lastReviewed": "2026-10-03",
+  "apps": [
+    {"id":"agri-hub","name":"JBS Agri Hub","repoSource":"jbs-agri-hub","status":"active-source"},
+    {"id":"owner","name":"JBS Owner Hub","status":"prototype"},
+    {"id":"orchestrator","name":"JBS Orchestrator Hub","status":"prototype"},
+    {"id":"billing","name":"JBS Billing","status":"planned"},
+    {"id":"accounts","name":"JBS Accounts","status":"planned"},
+    {"id":"attendance","name":"JBS Attendance & Salary","status":"planned"},
+    {"id":"marketing","name":"JBS Marketing","status":"planned"},
+    {"id":"delivery","name":"JBS Delivery","status":"planned"},
+    {"id":"ai","name":"JBS AI Assistant","status":"planned"}
+  ],
+  "principles": [
+    "Reuse the existing Agri Hub source before creating duplicate implementations.",
+    "Keep shared authentication, data contracts, billing, inventory and reporting consistent across apps.",
+    "Do not represent planned work as completed.",
+    "Production readiness requires build, runtime, Firebase and release validation."
+  ]
+}
