@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getCheckoutDraft } from "@/services/checkout";
 import {
     SafeAreaView,
     ScrollView,
@@ -18,6 +19,7 @@ export default function CheckoutScreen() {
   const [customerName, setCustomerName] = useState("");
   const [mobile, setMobile] = useState("");
   const [address, setAddress] = useState("");
+  const [draftItems, setDraftItems] = useState<import("@/services/checkout").CheckoutItem[]>([]);
 
   const name =
     typeof params.name === "string"
@@ -38,6 +40,16 @@ export default function CheckoutScreen() {
     typeof params.total === "string"
       ? Number(params.total)
       : price * quantity;
+
+  useEffect(() => {
+    getCheckoutDraft().then((draft) => {
+      if (draft?.items.length) setDraftItems(draft.items);
+    });
+  }, []);
+
+  const displayItems = draftItems.length
+    ? draftItems
+    : [{ id: "single", name, price, quantity }];
 
   const canContinue =
     deliveryType === "pickup" ||
@@ -75,6 +87,7 @@ export default function CheckoutScreen() {
         customerName: customerName,
         mobile: mobile,
         address: address,
+        items: JSON.stringify(displayItems),
       },
     });
   };
@@ -102,29 +115,23 @@ export default function CheckoutScreen() {
         </Text>
 
         <View style={styles.card}>
-          <Text style={styles.productName}>
-            {name}
-          </Text>
+          {displayItems.map((item) => (
+            <View key={item.id} style={{ marginBottom: 12 }}>
+              <Text style={styles.productName}>
+                {item.name}
+              </Text>
 
-          <View style={styles.row}>
-            <Text style={styles.label}>
-              Price
-            </Text>
+              <View style={styles.row}>
+                <Text style={styles.label}>
+                  Price × Quantity
+                </Text>
 
-            <Text style={styles.value}>
-              ₹{price.toLocaleString("en-IN")}
-            </Text>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.label}>
-              Quantity
-            </Text>
-
-            <Text style={styles.value}>
-              {quantity}
-            </Text>
-          </View>
+                <Text style={styles.value}>
+                  ₹{(item.price * item.quantity).toLocaleString("en-IN")} × {item.quantity}
+                </Text>
+              </View>
+            </View>
+          ))}
 
           <View style={styles.line} />
 
