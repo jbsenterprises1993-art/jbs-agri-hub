@@ -3,19 +3,78 @@
   "sourceOfTruth": "JBS Full App Ecosystem",
   "lastReviewed": "2026-10-04",
   "apps": [
-    {"id":"agri-hub","name":"JBS Agri Hub","repoSource":"jbs-agri-hub","status":"active-source"},
-    {"id":"owner","name":"JBS Owner Hub","status":"prototype"},
-    {"id":"orchestrator","name":"JBS Orchestrator Hub","status":"prototype"},
-    {"id":"billing","name":"JBS Billing","status":"foundation"},
-    {"id":"accounts","name":"JBS Accounts","status":"foundation"},
-    {"id":"attendance","name":"JBS Attendance & Salary","status":"foundation"},
-    {"id":"marketing","name":"JBS Marketing","status":"foundation"},
-    {"id":"delivery","name":"JBS Delivery","status":"foundation"},
-    {"id":"ai","name":"JBS AI Assistant","status":"foundation"},
-    {"id":"inventory","name":"JBS Inventory","status":"foundation"}
+    {
+      "id": "agri-hub",
+      "name": "JBS Agri Hub",
+      "repoSource": "jbs-agri-hub",
+      "status": "active-source",
+      "tasks": [
+        {
+          "id": "firebase-security",
+          "name": "Firestore ownership & admin-claim security",
+          "status": "in_progress"
+        }
+      ]
+    },
+    {
+      "id": "owner",
+      "name": "JBS Owner Hub",
+      "status": "prototype"
+    },
+    {
+      "id": "orchestrator",
+      "name": "JBS Orchestrator Hub",
+      "status": "prototype"
+    },
+    {
+      "id": "billing",
+      "name": "JBS Billing",
+      "status": "foundation"
+    },
+    {
+      "id": "accounts",
+      "name": "JBS Accounts",
+      "status": "foundation"
+    },
+    {
+      "id": "attendance",
+      "name": "JBS Attendance & Salary",
+      "status": "foundation"
+    },
+    {
+      "id": "marketing",
+      "name": "JBS Marketing",
+      "status": "foundation"
+    },
+    {
+      "id": "delivery",
+      "name": "JBS Delivery",
+      "status": "foundation"
+    },
+    {
+      "id": "ai",
+      "name": "JBS AI Assistant",
+      "status": "foundation"
+    },
+    {
+      "id": "inventory",
+      "name": "JBS Inventory",
+      "status": "foundation"
+    }
   ],
-  "sharedContracts":["customer-types","inventory-types","order-types","billing-types","accounts-types","attendance-types","delivery-types","marketing-types","ai-types","report-types"],
-  "principles":[
+  "sharedContracts": [
+    "customer-types",
+    "inventory-types",
+    "order-types",
+    "billing-types",
+    "accounts-types",
+    "attendance-types",
+    "delivery-types",
+    "marketing-types",
+    "ai-types",
+    "report-types"
+  ],
+  "principles": [
     "Reuse the existing Agri Hub source before creating duplicate implementations.",
     "Keep shared authentication, customer, inventory, billing, order and reporting contracts consistent across apps.",
     "Foundation means shared contracts exist; it does not mean the app is production complete.",
