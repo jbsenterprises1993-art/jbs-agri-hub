@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#166534",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   price: {
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
   },
 
   coin: {
-    color: "#CA8A04",
+    color: JBS_THEME.colors.warning,
     fontWeight: "bold",
   },
 
@@ -577,13 +577,13 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 10,
-    backgroundColor: "#15803D",
+    backgroundColor: JBS_THEME.colors.primary,
     alignItems: "center",
     justifyContent: "center",
   },
 
   quantityButtonText: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 23,
     fontWeight: "bold",
   },
@@ -608,7 +608,7 @@ const styles = StyleSheet.create({
   },
 
   removeText: {
-    color: "#DC2626",
+    color: JBS_THEME.colors.danger,
     fontSize: 14,
     fontWeight: "bold",
   },
@@ -666,28 +666,28 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 23,
     fontWeight: "bold",
-    color: "#222222",
+    color: JBS_THEME.colors.text,
     textAlign: "center",
   },
 
   emptyText: {
     marginTop: 12,
     fontSize: 15,
-    color: "#777777",
+    color: JBS_THEME.colors.textSecondary,
     textAlign: "center",
     lineHeight: 22,
   },
 
   shopButton: {
     marginTop: 25,
-    backgroundColor: "#15803D",
+    backgroundColor: JBS_THEME.colors.primary,
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 14,
   },
 
   shopButtonText: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -706,7 +706,7 @@ const styles = StyleSheet.create({
   },
 
   totalLabel: {
-    color: "#777777",
+    color: JBS_THEME.colors.textSecondary,
     fontSize: 13,
   },
 
@@ -718,7 +718,7 @@ const styles = StyleSheet.create({
   },
 
   checkoutButton: {
-    backgroundColor: "#15803D",
+    backgroundColor: JBS_THEME.colors.primary,
     paddingVertical: 16,
     paddingHorizontal: 38,
     borderRadius: 14,
@@ -729,7 +729,7 @@ const styles = StyleSheet.create({
   },
 
   checkoutText: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 16,
     fontWeight: "bold",
   },
