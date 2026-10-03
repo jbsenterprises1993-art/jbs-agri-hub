@@ -26,7 +26,10 @@ export default function MyOrdersScreen() {
       let unsubscribe: () => void = () => undefined;
       loadOrders().then(() => {
         unsubscribe = subscribeToCurrentUserOrders(
-          async (cloudOrders) => {\n            const localOrders = await getOrders();\n            setOrders(mergeOrdersWithCloud(localOrders, cloudOrders));\n          },
+          async (cloudOrders) => {
+            const localOrders = await getOrders();
+            setOrders(mergeOrdersWithCloud(localOrders, cloudOrders));
+          },
           () => undefined,
         );
       });
