@@ -4,7 +4,44 @@ import {
   commitInventoryAndMovements,
   getInventory,
   getStockMovements,
+  saveInventory,
 } from "@/services/inventory-storage";
+
+export const DEFAULT_INVENTORY: InventoryItem[] = [
+  {
+    productId: "petrol-power-sprayer",
+    productName: "Petrol Power Sprayer",
+    sku: "JBS-PS-01",
+    quantity: 12,
+    lowStockLimit: 5,
+    highStockLimit: 30,
+    purchaseRate: 9500,
+    gstPercent: 18,
+    active: true,
+  },
+  {
+    productId: "power-weeder",
+    productName: "Power Weeder",
+    sku: "JBS-PW-01",
+    quantity: 4,
+    lowStockLimit: 5,
+    highStockLimit: 20,
+    purchaseRate: 42000,
+    gstPercent: 18,
+    active: true,
+  },
+];
+
+export async function ensureInventorySeeded(): Promise<InventoryItem[]> {
+  const inventory = await getInventory();
+
+  if (inventory.length > 0) {
+    return inventory;
+  }
+
+  await saveInventory(DEFAULT_INVENTORY);
+  return DEFAULT_INVENTORY;
+}
 
 export function applyStockMovement(
   item: InventoryItem,
@@ -42,7 +79,7 @@ export type InventorySaleResult = {
 export async function applyOrderSale(
   order: Order,
 ): Promise<InventorySaleResult> {
-  const inventory = await getInventory();
+  const inventory = await ensureInventorySeeded();
   const existingMovements = await getStockMovements();
 
   const sourceItems =
@@ -50,7 +87,7 @@ export async function applyOrderSale(
       ? order.items
       : [
           {
-            id: order.orderId,
+            id: order.name.toLowerCase().replace(/\s+/g, "-"),
             name: order.name,
             price: order.price,
             quantity: order.quantity,
@@ -70,7 +107,9 @@ export async function applyOrderSale(
     quantities.set(productId, (quantities.get(productId) ?? 0) + quantity);
   }
 
-  const movementKey = (productId: string) => `sale:${order.orderId}:${productId}`;
+  const movementKey = (productId: string) =>
+    `sale:${order.orderId}:${productId}`;
+
   const existingKeys = new Set(
     existingMovements
       .filter((movement) => movement.type === "sale" && movement.referenceId)
