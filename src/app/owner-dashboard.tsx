@@ -52,6 +52,10 @@ export default function OwnerDashboardScreen() {
   const report = buildBusinessMetric(orders, "daily", new Date().toISOString().slice(0, 10), new Date().toISOString().slice(0, 10));
   const lowStockCount = inventory.filter(isLowStock).length;
   const totalStockUnits = inventory.reduce((sum, item) => sum + Math.max(0, Number(item.quantity || 0)), 0);
+  const stockValue = inventory.reduce(
+    (sum, item) => sum + Math.max(0, Number(item.quantity || 0)) * Math.max(0, Number(item.purchaseRate || 0)),
+    0,
+  );
   const controlSummary = getOwnerControlSummary();
 
   return (
@@ -82,6 +86,7 @@ export default function OwnerDashboardScreen() {
               <Metric label="Sales KPI" value={`₹${report.sales.toLocaleString("en-IN")}`} />
               <Metric label="Low Stock" value={String(lowStockCount)} />
               <Metric label="Stock Units" value={String(totalStockUnits)} />
+              <Metric label="Stock Value" value={`₹${stockValue.toLocaleString("en-IN")}`} />
               <Metric label="Dev Progress" value={`${controlSummary.progressPercent}%`} />
             </View>
 
