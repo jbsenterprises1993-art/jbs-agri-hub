@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import type { Order, PaymentStatus } from "@/data/order-types";
+import type { Order, OrderItem, PaymentStatus } from "@/data/order-types";
 import { saveOrder as persistOrder } from "@/services/orders";
 import {
     SafeAreaView,
@@ -61,6 +61,16 @@ export default function OrderSuccessScreen() {
       ? params.address
       : undefined;
 
+  const items: OrderItem[] = (() => {
+    if (typeof params.items !== "string") return [];
+    try {
+      const parsed: unknown = JSON.parse(params.items);
+      return Array.isArray(parsed) ? parsed as OrderItem[] : [];
+    } catch {
+      return [];
+    }
+  })();
+
   const paymentStatus: PaymentStatus =
     params.paymentStatus === "cod"
       ? "cod"
@@ -82,6 +92,7 @@ export default function OrderSuccessScreen() {
       total,
       paymentMethod,
       paymentStatus,
+      items,
       deliveryType,
       customerName,
       mobile,
