@@ -74,7 +74,7 @@ export default function OwnerDashboardScreen() {
 
         {loading ? (
           <View style={styles.loading}>
-            <ActivityIndicator size="large" color="#20A653" />
+            <ActivityIndicator size="large" color={JBS_THEME.colors.primary} />
             <Text style={styles.loadingText}>Loading business data...</Text>
           </View>
         ) : (
