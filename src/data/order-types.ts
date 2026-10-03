@@ -13,12 +13,20 @@ export type PaymentStatus =
   | "cod"
   | "paid";
 
+export type OrderItem = {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+};
+
 export type Order = {
   orderId: string;
   name: string;
   price: number;
   quantity: number;
   total: number;
+  items?: OrderItem[];
   paymentMethod: string;
   paymentStatus?: PaymentStatus;
   deliveryType: string;
