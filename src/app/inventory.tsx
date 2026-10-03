@@ -16,6 +16,7 @@ export default function InventoryScreen() {
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [movements, setMovements] = useState<StockMovement[]>([]);
+  const [search, setSearch] = useState("");
 
   const load = useCallback(async () => {
     const stored = await getInventory();
@@ -35,6 +36,12 @@ export default function InventoryScreen() {
   const highStockCount = items.filter((item) =>
     item.highStockLimit !== undefined && Number(item.quantity) >= Number(item.highStockLimit),
   ).length;
+  const totalStockUnits = items.reduce((sum, item) => sum + Math.max(0, Number(item.quantity || 0)), 0);
+  const filteredItems = items.filter((item) => {
+    const term = search.trim().toLowerCase();
+    if (!term) return true;
+    return item.productName.toLowerCase().includes(term) || (item.sku ?? "").toLowerCase().includes(term);
+  });
   const stockValue = items.reduce(
     (sum, item) => sum + Math.max(0, Number(item.quantity || 0)) * Math.max(0, Number(item.purchaseRate || 0)),
     0,
@@ -75,17 +82,26 @@ export default function InventoryScreen() {
         <Text style={styles.sub}>Local inventory foundation • low-stock limits included</Text>
         <View style={styles.summaryRow}>
           <View style={styles.summaryBlock}>
-            <Text style={styles.summary}>Low: {lowStockCount} • High: {highStockCount}</Text>
+            <Text style={styles.summary}>Low: {lowStockCount} • High: {highStockCount} • Units: {totalStockUnits}</Text>
             <Text style={styles.summarySub}>Value: ₹{stockValue.toLocaleString("en-IN")} • Movements: {movements.length}</Text>
           </View>
-          <Pressable onPress={load} accessibilityRole="button"><Text style={styles.reload}>↻ Reload</Text></Pressable>
+          <Pressable onPress={load} accessibilityRole="button" accessibilityLabel="Reload inventory"><Text style={styles.reload}>↻ Reload</Text></Pressable>
         </View>
-        {loaded && items.map(item => (
+        <TextInput
+          value={search}
+          onChangeText={setSearch}
+          placeholder="Search product or SKU"
+          placeholderTextColor={JBS_THEME.colors.textMuted}
+          style={styles.search}
+          accessibilityLabel="Search inventory"
+        />
+        {loaded && filteredItems.map(item => (
           <View key={item.productId} style={styles.card}>
             <View style={styles.row}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.name}>{item.productName}</Text>
                 <Text style={styles.meta}>{item.sku ?? "No SKU"} • GST {item.gstPercent}%</Text>
+                <Text style={styles.stockValue}>Stock value: ₹{(Math.max(0, Number(item.quantity || 0)) * Math.max(0, Number(item.purchaseRate || 0))).toLocaleString("en-IN")}</Text>
                 <Text style={isLowStock(item) ? styles.statusLow : item.highStockLimit !== undefined && Number(item.quantity) >= Number(item.highStockLimit) ? styles.statusHigh : styles.statusOk}>
                   {isLowStock(item) ? "LOW STOCK" : item.highStockLimit !== undefined && Number(item.quantity) >= Number(item.highStockLimit) ? "HIGH STOCK" : "STOCK OK"}
                 </Text>
@@ -93,12 +109,13 @@ export default function InventoryScreen() {
               <Text style={[styles.qty, isLowStock(item) && styles.low]}>{item.quantity}</Text>
             </View>
             <View style={styles.controls}>
-              <Pressable style={styles.button} onPress={() => updateQty(item.productId, -1)}><Text style={styles.buttonText}>−</Text></Pressable>
+              <Pressable style={styles.button} onPress={() => updateQty(item.productId, -1)} accessibilityRole="button" accessibilityLabel={`Decrease ${item.productName} stock`}><Text style={styles.buttonText}>−</Text></Pressable>
               <Text style={styles.limit}>Low stock: {item.lowStockLimit}</Text>
-              <Pressable style={styles.button} onPress={() => updateQty(item.productId, 1)}><Text style={styles.buttonText}>+</Text></Pressable>
+              <Pressable style={styles.button} onPress={() => updateQty(item.productId, 1)} accessibilityRole="button" accessibilityLabel={`Increase ${item.productName} stock`}><Text style={styles.buttonText}>+</Text></Pressable>
             </View>
           </View>
         ))}
+        {loaded && filteredItems.length === 0 && <Text style={styles.emptySearch}>No products match “{search}”.</Text>}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Recent Stock Movements</Text>
           {movements.length === 0 ? (
@@ -130,12 +147,12 @@ export default function InventoryScreen() {
 }
 const styles = StyleSheet.create({
   statusLow:{color:JBS_THEME.colors.warning,fontSize:10,fontWeight:"900",marginTop:4},statusHigh:{color:JBS_THEME.colors.primarySoft,fontSize:10,fontWeight:"900",marginTop:4},statusOk:{color:JBS_THEME.colors.textMuted,fontSize:10,fontWeight:"800",marginTop:4},
-  sectionTitle:{color:JBS_THEME.colors.text,fontSize:16,fontWeight:"900",marginBottom:8},muted:{color:JBS_THEME.colors.textMuted,fontSize:11},movementRow:{flexDirection:"row",justifyContent:"space-between",alignItems:"center",paddingVertical:10,borderTopWidth:1,borderTopColor:JBS_THEME.colors.border},movementMain:{flex:1,marginRight:12},movementName:{color:JBS_THEME.colors.text,fontSize:13,fontWeight:"800"},purchaseQty:{color:JBS_THEME.colors.primarySoft,fontSize:18,fontWeight:"900"},saleQty:{color:JBS_THEME.colors.warning,fontSize:18,fontWeight:"900"},
+  sectionTitle:{color:JBS_THEME.colors.text,fontSize:16,fontWeight:"900",marginBottom:8},search:{height:46,borderRadius:14,borderWidth:1,borderColor:JBS_THEME.colors.border,backgroundColor:JBS_THEME.colors.surface,paddingHorizontal:14,color:JBS_THEME.colors.text,fontSize:13,marginBottom:12},stockValue:{color:JBS_THEME.colors.textSecondary,fontSize:11,marginTop:4},emptySearch:{color:JBS_THEME.colors.textMuted,fontSize:12,textAlign:"center",paddingVertical:14},muted:{color:JBS_THEME.colors.textMuted,fontSize:11},movementRow:{flexDirection:"row",justifyContent:"space-between",alignItems:"center",paddingVertical:10,borderTopWidth:1,borderTopColor:JBS_THEME.colors.border},movementMain:{flex:1,marginRight:12},movementName:{color:JBS_THEME.colors.text,fontSize:13,fontWeight:"800"},purchaseQty:{color:JBS_THEME.colors.primarySoft,fontSize:18,fontWeight:"900"},saleQty:{color:JBS_THEME.colors.warning,fontSize:18,fontWeight:"900"},
   safe:{flex:1,backgroundColor:JBS_THEME.colors.background},container:{padding:18,paddingBottom:40},back:{color:JBS_THEME.colors.primarySoft,fontSize:17,fontWeight:"800",marginBottom:22},
   eyebrow:{color:JBS_THEME.colors.primarySoft,fontSize:11,fontWeight:"900",letterSpacing:2},title:{color:JBS_THEME.colors.text,fontSize:30,fontWeight:"900",marginTop:4},
   sub:{color:JBS_THEME.colors.textSecondary,fontSize:12,lineHeight:18,marginTop:6,marginBottom:18},card:{backgroundColor:JBS_THEME.colors.surface,borderRadius:18,padding:16,marginBottom:12},
   row:{flexDirection:"row",alignItems:"center"},name:{color:JBS_THEME.colors.text,fontSize:16,fontWeight:"900"},meta:{color:JBS_THEME.colors.textMuted,fontSize:11,marginTop:4},
   qty:{color:JBS_THEME.colors.primarySoft,fontSize:28,fontWeight:"900"},low:{color:JBS_THEME.colors.warning},controls:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginTop:14},
   button:{width:42,height:38,borderRadius:12,backgroundColor:JBS_THEME.colors.surfaceElevated,alignItems:"center",justifyContent:"center"},buttonText:{color:JBS_THEME.colors.text,fontSize:22,fontWeight:"900"},
-  limit:{color:JBS_THEME.colors.textSecondary,fontSize:11},summaryRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:14},summary:{color:JBS_THEME.colors.primarySoft,fontSize:12,fontWeight:"800"},summaryBlock:{flex:1},summarySub:{color:JBS_THEME.colors.textMuted,fontSize:10,marginTop:3},reload:{color:"JBS_THEME.colors.text",fontSize:12,fontWeight:"800"},note:{color:JBS_THEME.colors.textMuted,fontSize:11,lineHeight:17,marginTop:8}
+  limit:{color:JBS_THEME.colors.textSecondary,fontSize:11},summaryRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:14},summary:{color:JBS_THEME.colors.primarySoft,fontSize:12,fontWeight:"800"},summaryBlock:{flex:1},summarySub:{color:JBS_THEME.colors.textMuted,fontSize:10,marginTop:3},reload:{color:JBS_THEME.colors.text,fontSize:12,fontWeight:"800"},note:{color:JBS_THEME.colors.textMuted,fontSize:11,lineHeight:17,marginTop:8}
 });
