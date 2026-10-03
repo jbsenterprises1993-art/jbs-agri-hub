@@ -1,0 +1,7 @@
+import { router } from "expo-router";
+import React from "react";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import type { Delivery } from "@/data/delivery-types";
+const demo:Delivery={id:"demo",orderId:"demo",transportName:"Transport Pending",deliveryStatus:"pending",deliveryCharge:0};
+export default function DeliveryScreen(){return <SafeAreaView style={s.safe}><View style={s.c}><Pressable onPress={()=>router.back()}><Text style={s.b}>← Back</Text></Pressable><Text style={s.e}>JBS DELIVERY</Text><Text style={s.t}>Delivery Control</Text><Text style={s.n}>Delivery status workflow is ready. Transport assignment and live tracking need provider/API integration.</Text><View style={s.card}><Text style={s.label}>Status</Text><Text style={s.value}>{demo.deliveryStatus.toUpperCase()}</Text><Text style={s.label}>Transport</Text><Text style={s.value}>{demo.transportName}</Text></View></View></SafeAreaView>}
+const s=StyleSheet.create({safe:{flex:1,backgroundColor:"#071A12"},c:{padding:18},b:{color:"#6ED99A",fontSize:17,fontWeight:"800",marginBottom:22},e:{color:"#6ED99A",fontSize:11,fontWeight:"900",letterSpacing:2},t:{color:"#FFF",fontSize:28,fontWeight:"900",marginTop:4},n:{color:"#9BC7A9",fontSize:12,lineHeight:18,marginVertical:16},card:{backgroundColor:"#102A1D",borderRadius:18,padding:18},label:{color:"#8EAE99",fontSize:11,marginTop:10},value:{color:"#FFF",fontSize:18,fontWeight:"900",marginTop:4}});
