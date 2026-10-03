@@ -1,4 +1,4 @@
-import auth from "@react-native-firebase/auth";
+import { getAuth, signInWithPhoneNumber } from "@react-native-firebase/auth";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -36,9 +36,7 @@ export default function LoginScreen() {
 
       const fullPhoneNumber = `+91${cleanPhone}`;
 
-      const result = await auth().signInWithPhoneNumber(
-        fullPhoneNumber
-      );
+      const result = await signInWithPhoneNumber(getAuth(), fullPhoneNumber);
 
       setConfirmation(result);
       setOtpSent(true);
