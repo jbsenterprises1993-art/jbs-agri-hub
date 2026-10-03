@@ -95,6 +95,30 @@ export default function InventoryScreen() {
             </View>
           </View>
         ))}
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>Recent Stock Movements</Text>
+          {movements.length === 0 ? (
+            <Text style={styles.muted}>No stock movements recorded yet.</Text>
+          ) : (
+            movements.slice(0, 8).map((movement) => {
+              const product = items.find((item) => item.productId === movement.productId);
+              return (
+                <View key={movement.id} style={styles.movementRow}>
+                  <View style={styles.movementMain}>
+                    <Text style={styles.movementName}>{product?.productName ?? movement.productId}</Text>
+                    <Text style={styles.muted}>
+                      {movement.type === "purchase" ? "Purchase" : movement.type === "sale" ? "Sale" : movement.type}
+                      {" • "}₹{Number(movement.unitRate || 0).toLocaleString("en-IN")}
+                    </Text>
+                  </View>
+                  <Text style={movement.type === "sale" ? styles.saleQty : styles.purchaseQty}>
+                    {movement.type === "sale" ? "-" : "+"}{movement.quantity}
+                  </Text>
+                </View>
+              );
+            })
+          )}
+        </View>
         <Text style={styles.note}>Production stock sync, purchase entries and cloud inventory are still release work.</Text>
       </ScrollView>
     </SafeAreaView>
