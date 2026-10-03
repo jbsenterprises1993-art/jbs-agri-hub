@@ -19,7 +19,7 @@ export function updateAiTaskStatus(task: AiTask, status: AiTaskStatus): AiTask {
   return {
     ...task,
     status,
-    completedAt: status === "completed" ? new Date().toISOString() : task.completedAt,
+    completedAt: status === "completed" ? new Date().toISOString() : undefined,
   };
 }
 
