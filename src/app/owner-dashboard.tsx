@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import type { Order } from "@/data/order-types";
 import { getOrders } from "@/services/orders";
+import { subscribeToCloudOrders } from "@/services/cloud-orders";
 
 export default function OwnerDashboardScreen() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -24,7 +25,16 @@ export default function OwnerDashboardScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      load();
+      let unsubscribe = () => undefined;
+
+      load().then(() => {
+        unsubscribe = subscribeToCloudOrders(
+          (cloudOrders) => setOrders(cloudOrders),
+          () => undefined,
+        );
+      });
+
+      return () => unsubscribe();
     }, [load]),
   );
 
@@ -42,7 +52,7 @@ export default function OwnerDashboardScreen() {
         <Text style={styles.eyebrow}>JBS OWNER HUB</Text>
         <Text style={styles.title}>Business Dashboard</Text>
         <Text style={styles.subtitle}>
-          Local order data now • Firestore sync when authenticated
+          Local data + real-time Firestore when admin access is configured
         </Text>
 
         {loading ? (
