@@ -107,7 +107,12 @@ export default function OwnerDashboardScreen() {
               <Text style={styles.progressSub}>Open the JBS app-by-app progress dashboard</Text>
             </Pressable>
 
-            <Pressable style={styles.modulesButton} onPress={() => router.push("/modules")}>\n              <Text style={styles.ordersTitle}>🧩 All JBS Apps</Text>\n              <Text style={styles.ordersSub}>Open Billing, Accounts, Attendance, Delivery, Marketing and AI</Text>\n            </Pressable>\n\n            <Pressable style={styles.ordersButton} onPress={() => router.push("/admin-orders")}>
+            <Pressable style={styles.modulesButton} onPress={() => router.push("/modules")}>
+              <Text style={styles.ordersTitle}>🧩 All JBS Apps</Text>
+              <Text style={styles.ordersSub}>Open Billing, Accounts, Attendance, Delivery, Marketing and AI</Text>
+            </Pressable>
+
+            <Pressable style={styles.ordersButton} onPress={() => router.push("/admin-orders")}>
               <Text style={styles.ordersTitle}>🛠 Admin Order Management</Text>
               <Text style={styles.ordersSub}>Review orders and update delivery status</Text>
             </Pressable>
@@ -152,7 +157,8 @@ const styles = StyleSheet.create({
   progressButton: { backgroundColor: "#20A653", borderRadius: 15, padding: 16, marginTop: 16 },
   progressTitle: { color: "#FFFFFF", fontWeight: "900", fontSize: 15 },
   progressSub: { color: "#DDFBE8", fontSize: 11, marginTop: 4 },
-  modulesButton: { backgroundColor: "#18352A", borderRadius: 15, padding: 16, marginTop: 10, borderWidth: 1, borderColor: "#2B7650" },\n  ordersButton: { backgroundColor: "#163B28", borderRadius: 15, padding: 16, marginTop: 10, borderWidth: 1, borderColor: "#28633F" },
+  modulesButton: { backgroundColor: "#18352A", borderRadius: 15, padding: 16, marginTop: 10, borderWidth: 1, borderColor: "#2B7650" },
+  ordersButton: { backgroundColor: "#163B28", borderRadius: 15, padding: 16, marginTop: 10, borderWidth: 1, borderColor: "#28633F" },
   ordersTitle: { color: "#FFFFFF", fontWeight: "900", fontSize: 15 },
   ordersSub: { color: "#9BC7A9", fontSize: 11, marginTop: 4 },
 });
