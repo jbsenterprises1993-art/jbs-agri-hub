@@ -1,0 +1,25 @@
+export const JBS_THEME = {
+  colors: {
+    background: "#06110C",
+    surface: "#0D2117",
+    surfaceElevated: "#12301F",
+    border: "#244936",
+    primary: "#35C878",
+    primarySoft: "#75E6A4",
+    text: "#FFFFFF",
+    textSecondary: "#A9C7B3",
+    textMuted: "#708E7C",
+    warning: "#FFD166",
+    danger: "#FF7A7A",
+    info: "#7CCBFF",
+  },
+  radius: { sm: 10, md: 14, lg: 20, xl: 26 },
+  spacing: { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 },
+  shadow: {
+    shadowColor: "#000000",
+    shadowOpacity: 0.28,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 8,
+  },
+} as const;
