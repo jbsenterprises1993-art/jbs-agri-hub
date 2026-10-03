@@ -26,9 +26,9 @@ export const JBS_ECOSYSTEM: JbsApp[] = [
   { id:"accounts", name:"JBS Accounts", tamil:"Accounts", tasks:[
     {id:"accounts",name:"Accounts management",status:"completed"},{id:"bank",name:"Bank transfer rules",status:"planned"}]},
   { id:"marketing", name:"JBS Marketing", tamil:"Marketing", tasks:[
-    {id:"posts",name:"Post generation",status:"planned"},{id:"social",name:"Social publishing",status:"planned"},{id:"ai",name:"Marketing AI assistant",status:"planned"}]},
+    {id:"posts",name:"Post generation",status:"completed"},{id:"social",name:"Social publishing",status:"planned"},{id:"ai",name:"Marketing AI assistant",status:"in_progress"}]},
   { id:"delivery", name:"JBS Delivery", tamil:"Delivery & Tracking", tasks:[
     {id:"delivery",name:"Delivery workflow",status:"completed"},{id:"tracking",name:"Transport tracking",status:"planned"}]},
   { id:"ai", name:"JBS AI", tamil:"AI Assistant", tasks:[
-    {id:"owner-ai",name:"Owner AI assistant",status:"planned"},{id:"voice",name:"Voice controls",status:"planned"}]}
+    {id:"owner-ai",name:"Owner AI assistant",status:"in_progress"},{id:"voice",name:"Voice controls",status:"planned"}]}
 ];
