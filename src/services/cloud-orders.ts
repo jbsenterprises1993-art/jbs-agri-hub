@@ -55,7 +55,6 @@ export async function syncOrderStatusToCloud(
     return await saveFirestoreOrder(orderId, {
       status,
       updatedAt: new Date().toISOString(),
-      userId: user.uid,
     });
   } catch (error) {
     console.log("Cloud order status sync skipped:", error);
