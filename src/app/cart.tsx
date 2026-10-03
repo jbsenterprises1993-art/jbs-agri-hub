@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { saveCheckoutDraft } from "@/services/checkout";
+import { JBS_THEME } from "@/theme/jbs-theme";
 import {
     SafeAreaView,
     ScrollView,
@@ -446,18 +447,18 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#F4F8F3",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   container: {
     flex: 1,
-    backgroundColor: "#F4F8F3",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   header: {
     paddingHorizontal: 20,
     paddingVertical: 18,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
 
     flexDirection: "row",
     alignItems: "center",
@@ -475,13 +476,13 @@ const styles = StyleSheet.create({
 
   backText: {
     fontSize: 32,
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   headerSpace: {
@@ -496,12 +497,12 @@ const styles = StyleSheet.create({
   itemCount: {
     fontSize: 15,
     fontWeight: "bold",
-    color: "#374151",
+    color: JBS_THEME.colors.textSecondary,
     marginBottom: 15,
   },
 
   productCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderRadius: 18,
     padding: 18,
     marginBottom: 18,
@@ -521,7 +522,7 @@ const styles = StyleSheet.create({
   iconBox: {
     width: 75,
     height: 75,
-    backgroundColor: "#DCFCE7",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
@@ -545,7 +546,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 21,
     fontWeight: "bold",
-    color: "#111827",
+    color: JBS_THEME.colors.text,
     marginTop: 7,
   },
 
@@ -556,7 +557,7 @@ const styles = StyleSheet.create({
   },
 
   discount: {
-    color: "#16A34A",
+    color: JBS_THEME.colors.primary,
     fontWeight: "bold",
     marginRight: 12,
   },
@@ -591,14 +592,14 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: "bold",
     marginHorizontal: 18,
-    color: "#111827",
+    color: JBS_THEME.colors.text,
   },
 
   itemTotal: {
     marginTop: 14,
     fontSize: 15,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
   },
 
   removeButton: {
@@ -613,7 +614,7 @@ const styles = StyleSheet.create({
   },
 
   continueShoppingButton: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderWidth: 2,
     borderColor: "#15803D",
     borderRadius: 14,
@@ -622,7 +623,7 @@ const styles = StyleSheet.create({
   },
 
   continueShoppingText: {
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -636,13 +637,13 @@ const styles = StyleSheet.create({
 
   loadingText: {
     fontSize: 17,
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     fontWeight: "bold",
   },
 
   emptyBox: {
     width: "100%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     borderRadius: 22,
     padding: 35,
     alignItems: "center",
@@ -692,7 +693,7 @@ const styles = StyleSheet.create({
   },
 
   bottom: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: JBS_THEME.colors.surface,
     paddingHorizontal: 20,
     paddingVertical: 18,
 
@@ -712,7 +713,7 @@ const styles = StyleSheet.create({
   total: {
     fontSize: 25,
     fontWeight: "bold",
-    color: "#15803D",
+    color: JBS_THEME.colors.primarySoft,
     marginTop: 3,
   },
 
