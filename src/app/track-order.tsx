@@ -1,5 +1,8 @@
 import { router, useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useCallback, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import type { OrderStatus } from "@/data/order-types";
+import { getOrders } from "@/services/orders";
 import {
     SafeAreaView,
     ScrollView,
@@ -36,7 +39,22 @@ export default function TrackOrderScreen() {
       ? normalizeStatus(params.status)
       : "Order Confirmed";
 
-  const currentStep = getCurrentStep(status);
+  const [liveStatus, setLiveStatus] = useState<OrderStatus>(status);
+
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+      getOrders().then((orders) => {
+        const order = orders.find((item) => item.orderId === orderId);
+        if (active && order) setLiveStatus(order.status);
+      });
+      return () => {
+        active = false;
+      };
+    }, [orderId]),
+  );
+
+  const currentStep = getCurrentStep(liveStatus);
 
   const steps: Step[] = [
     {
