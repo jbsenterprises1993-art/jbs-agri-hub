@@ -13,7 +13,7 @@ const phases = [
   ["App UI foundations", 100, "11 app workstreams have UI foundations"],
   ["Shared Firebase/data integration", 40, "Shared services exist; app-by-app wiring remains"],
   ["Payments, OTP & notifications", 0, "External configuration required"],
-  ["Testing & Android release", 0, "Pending verification"],
+  ["Testing & Android release", 20, "TypeScript CI passed; Android build/device verification pending"],
 ] as const;
 
 const services = [
@@ -76,7 +76,7 @@ export default function JBSProgress() {
 
       <View style={s.summary}>
         <Text style={s.summaryTitle}>Current checkpoint</Text>
-        <Text style={s.summaryValue}>Foundation services prepared</Text>
+        <Text style={s.summaryValue}>Foundation + TypeScript check passed</Text>
         <Text style={s.summaryText}>
           Shared service foundations are available. App integration, external configuration,
           and device verification are still in progress.
