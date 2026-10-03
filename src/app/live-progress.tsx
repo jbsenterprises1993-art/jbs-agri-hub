@@ -45,7 +45,6 @@ function moduleProgress(module: AppModule) {
 export default function LiveProgressScreen() {
   const [filter, setFilter] = useState<'all' | Status>('all');
   const modules = initialModules;
-  const [lastSynced, setLastSynced] = useState(new Date());
 
   const totals = useMemo(() => {
     const tasks = modules.flatMap((item) => item.tasks);
@@ -62,7 +61,6 @@ export default function LiveProgressScreen() {
     return module.tasks.some((task) => task.status === filter);
   });
 
-  const refresh = () => setLastSynced(new Date());
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -73,8 +71,8 @@ export default function LiveProgressScreen() {
             <Text style={styles.title}>Live Progress</Text>
             <Text style={styles.subtitle}>Apps வேலை நிலை / Development status</Text>
           </View>
-          <Pressable style={styles.refresh} onPress={refresh}>
-            <Text style={styles.refreshText}>↻</Text>
+          <Pressable style={styles.refresh} onPress={() => undefined} accessibilityRole="button" accessibilityLabel="Progress source is static">
+            <Text style={styles.refreshText}>✓</Text>
           </Pressable>
         </View>
 
@@ -88,7 +86,7 @@ export default function LiveProgressScreen() {
             <Text style={styles.heroText}>
               {totals.completed} of {totals.total} tracked tasks completed
             </Text>
-            <Text style={styles.sync}>Last sync: {lastSynced.toLocaleTimeString()}</Text>
+            <Text style={styles.sync}>Source: JBS ecosystem manifest • reviewed 03 Oct 2026</Text>
           </View>
         </View>
 
