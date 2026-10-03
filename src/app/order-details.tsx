@@ -1,5 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import type { Order } from "@/data/order-types";
+import { getOrderById } from "@/services/orders";
 import {
   SafeAreaView,
   ScrollView,
@@ -11,51 +13,38 @@ import {
 
 export default function OrderDetailsScreen() {
   const params = useLocalSearchParams();
+  const [cloudOrder, setCloudOrder] = useState<Order | null>(null);
 
-  const orderId =
-    typeof params.orderId === "string"
-      ? params.orderId
-      : "JBS Order";
+  const paramOrderId = typeof params.orderId === "string" ? params.orderId : "";
 
-  const name =
-    typeof params.name === "string"
-      ? params.name
-      : "Product";
+  useEffect(() => {
+    let active = true;
+    if (!paramOrderId) return;
+    getOrderById(paramOrderId).then((order) => {
+      if (active && order) setCloudOrder(order);
+    });
+    return () => {
+      active = false;
+    };
+  }, [paramOrderId]);
 
-  const price =
-    typeof params.price === "string"
-      ? Number(params.price)
-      : 0;
+  const orderId = cloudOrder?.orderId ?? paramOrderId || "JBS Order";
 
-  const quantity =
-    typeof params.quantity === "string"
-      ? Number(params.quantity)
-      : 1;
+  const name = cloudOrder?.name ?? (typeof params.name === "string" ? params.name : "Product");
 
-  const total =
-    typeof params.total === "string"
-      ? Number(params.total)
-      : price * quantity;
+  const price = cloudOrder?.price ?? (typeof params.price === "string" ? Number(params.price) : 0);
 
-  const paymentMethod =
-    typeof params.paymentMethod === "string"
-      ? params.paymentMethod
-      : "Payment";
+  const quantity = cloudOrder?.quantity ?? (typeof params.quantity === "string" ? Number(params.quantity) : 1);
 
-  const deliveryType =
-    typeof params.deliveryType === "string"
-      ? params.deliveryType
-      : "Delivery";
+  const total = cloudOrder?.total ?? (typeof params.total === "string" ? Number(params.total) : price * quantity);
 
-  const status =
-    typeof params.status === "string"
-      ? params.status
-      : "Order Confirmed";
+  const paymentMethod = cloudOrder?.paymentMethod ?? (typeof params.paymentMethod === "string" ? params.paymentMethod : "Payment");
 
-  const date =
-    typeof params.date === "string"
-      ? params.date
-      : "";
+  const deliveryType = cloudOrder?.deliveryType ?? (typeof params.deliveryType === "string" ? params.deliveryType : "Delivery");
+
+  const status = cloudOrder?.status ?? (typeof params.status === "string" ? params.status : "Order Confirmed");
+
+  const date = cloudOrder?.date ?? (typeof params.date === "string" ? params.date : "");
 
   const formatDate = (dateString: string) => {
     if (!dateString) {
