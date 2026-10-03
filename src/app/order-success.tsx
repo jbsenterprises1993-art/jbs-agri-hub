@@ -4,6 +4,7 @@ import type { OrderItem, PaymentStatus } from "@/data/order-types";
 import { saveOrder as persistOrder } from "@/services/orders";
 import { clearCheckoutDraft } from "@/services/checkout";
 import { applyOrderSale } from "@/services/inventory";
+import { resolvePaymentStatus } from "@/services/payment-boundary";
 import { JBS_THEME } from "@/theme/jbs-theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -75,12 +76,16 @@ export default function OrderSuccessScreen() {
     }
   }, [params.items]);
 
-  const paymentStatus: PaymentStatus =
+  const requestedPaymentStatus: PaymentStatus =
     params.paymentStatus === "cod"
       ? "cod"
       : params.paymentStatus === "paid"
       ? "paid"
       : "pending";
+
+  // Deep-link/query parameters are untrusted. A client cannot mark an order
+  // as paid without server-side verification from a payment provider.
+  const paymentStatus = resolvePaymentStatus(requestedPaymentStatus);
 
   const total =
     typeof params.total === "string"
