@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';\nimport { JBS_ECOSYSTEM } from '@/data/jbs-ecosystem';
+import React, { useMemo, useState } from 'react';
+import { JBS_ECOSYSTEM } from '@/data/jbs-ecosystem';
 import {
   Pressable,
   SafeAreaView,
@@ -63,8 +64,6 @@ export default function LiveProgressScreen() {
 
   const refresh = () => setLastSynced(new Date());
 
-  const refresh = () => setLastSynced(new Date());
-
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -117,7 +116,9 @@ export default function LiveProgressScreen() {
           return (
             <View key={module.id} style={styles.card}>
               <View style={styles.cardTop}>
-                <View style={styles.appIcon}><Text style={styles.appIconText}>J</Text></View>
+                <View style={styles.appIcon}>
+                  <Text style={styles.appIconText}>J</Text>
+                </View>
                 <View style={styles.appNameWrap}>
                   <Text style={styles.appName}>{module.name}</Text>
                   <Text style={styles.appTamil}>{module.tamil}</Text>
