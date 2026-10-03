@@ -62,14 +62,14 @@ export default function OwnerDashboardScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Pressable onPress={() => router.back()}>
+        <Pressable onPress={() => router.back()} accessibilityRole="button">
           <Text style={styles.back}>← Back</Text>
         </Pressable>
 
         <Text style={styles.eyebrow}>JBS OWNER HUB</Text>
         <Text style={styles.title}>Business Dashboard</Text>
         <Text style={styles.subtitle}>
-          Local data + real-time Firestore when admin access is configured
+          Local data + Firestore orders when trusted owner access is configured
         </Text>
 
         {loading ? (
@@ -121,11 +121,6 @@ export default function OwnerDashboardScreen() {
                 </View>
                 <Text style={styles.stockCount}>{lowStockCount} low</Text>
               </View>
-              <View style={styles.stockHeader}>
-
-                <Text style={styles.cardTitle}>Stock Alerts</Text>
-                <Text style={styles.stockCount}>{lowStockCount} low</Text>
-              </View>
               {lowStockCount === 0 ? (
                 <Text style={styles.muted}>All tracked items are above the low-stock limit.</Text>
               ) : (
@@ -141,17 +136,22 @@ export default function OwnerDashboardScreen() {
               )}
             </Pressable>
 
-            <Pressable style={styles.progressButton} onPress={() => router.push("/live-progress")}>
+            <Pressable style={styles.quickButton} onPress={() => router.push("/billing")} accessibilityRole="button">
+              <Text style={styles.ordersTitle}>🧾 Billing</Text>
+              <Text style={styles.ordersSub}>Create and review GST invoice calculations</Text>
+            </Pressable>
+
+            <Pressable style={styles.progressButton} onPress={() => router.push("/live-progress")} accessibilityRole="button">
               <Text style={styles.progressTitle}>📊 Ecosystem Development Progress</Text>
               <Text style={styles.progressSub}>Open the JBS app-by-app progress dashboard</Text>
             </Pressable>
 
-            <Pressable style={styles.modulesButton} onPress={() => router.push("/modules")}>
+            <Pressable style={styles.modulesButton} onPress={() => router.push("/modules")} accessibilityRole="button">
               <Text style={styles.ordersTitle}>🧩 All JBS Apps</Text>
               <Text style={styles.ordersSub}>Open Billing, Accounts, Attendance, Delivery, Marketing and AI</Text>
             </Pressable>
 
-            <Pressable style={styles.ordersButton} onPress={() => router.push("/admin-orders")}>
+            <Pressable style={styles.ordersButton} onPress={() => router.push("/admin-orders")} accessibilityRole="button">
               <Text style={styles.ordersTitle}>🛠 Admin Order Management</Text>
               <Text style={styles.ordersSub}>Review orders and update delivery status</Text>
             </Pressable>
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   title: { color: JBS_THEME.colors.text, fontSize: 30, fontWeight: "900", marginTop: 4 },
   subtitle: { color: JBS_THEME.colors.textSecondary, fontSize: 12, lineHeight: 18, marginTop: 6, marginBottom: 18 },
   loading: { backgroundColor: JBS_THEME.colors.surface, borderRadius: 20, padding: 35, alignItems: "center" },
-  loadingText: { color: "#C9D8CE", marginTop: 12 },
+  loadingText: { color: JBS_THEME.colors.textSecondary, marginTop: 12 },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginBottom: 16 },
   metric: { width: "48%", backgroundColor: JBS_THEME.colors.surface, borderRadius: 18, padding: 17 },
   metricValue: { color: JBS_THEME.colors.text, fontSize: 24, fontWeight: "900" },
@@ -197,12 +197,13 @@ const styles = StyleSheet.create({
   orderRow: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 12, borderTopWidth: 1, borderTopColor: JBS_THEME.colors.border },
   orderMain: { flex: 1, marginRight: 12 },
   orderId: { color: JBS_THEME.colors.primarySoft, fontSize: 12, fontWeight: "900" },
-  orderName: { color: "#C9D8CE", fontSize: 12, marginTop: 3 },
+  orderName: { color: JBS_THEME.colors.textSecondary, fontSize: 12, marginTop: 3 },
   amount: { color: JBS_THEME.colors.text, fontWeight: "900", textAlign: "right" },
   status: { color: JBS_THEME.colors.textMuted, fontSize: 10, marginTop: 3, textAlign: "right" },
   progressButton: { backgroundColor: JBS_THEME.colors.primary, borderRadius: 15, padding: 16, marginTop: 16 },
   progressTitle: { color: JBS_THEME.colors.text, fontWeight: "900", fontSize: 15 },
-  progressSub: { color: "#DDFBE8", fontSize: 11, marginTop: 4 },
+  progressSub: { color: JBS_THEME.colors.text, fontSize: 11, marginTop: 4 },
+  quickButton: { backgroundColor: JBS_THEME.colors.surfaceElevated, borderRadius: 15, padding: 16, marginTop: 10, borderWidth: 1, borderColor: JBS_THEME.colors.border },
   modulesButton: { backgroundColor: JBS_THEME.colors.surfaceElevated, borderRadius: 15, padding: 16, marginTop: 10, borderWidth: 1, borderColor: JBS_THEME.colors.border },
   ordersButton: { backgroundColor: JBS_THEME.colors.surfaceElevated, borderRadius: 15, padding: 16, marginTop: 10, borderWidth: 1, borderColor: JBS_THEME.colors.border },
   ordersTitle: { color: JBS_THEME.colors.text, fontWeight: "900", fontSize: 15 },
