@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import { JBS_THEME } from "@/theme/jbs-theme";
 import React from "react";
 import {
     Alert,
@@ -202,7 +203,7 @@ export default function SprayersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#002B1D",
+    backgroundColor: JBS_THEME.colors.background,
   },
 
   content: {
@@ -217,19 +218,19 @@ const styles = StyleSheet.create({
   },
 
   back: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 18,
     fontWeight: "600",
   },
 
   title: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 34,
     fontWeight: "bold",
   },
 
   subtitle: {
-    color: "#22C55E",
+    color: JBS_THEME.colors.primary,
     fontSize: 21,
     fontWeight: "600",
     marginTop: 15,
@@ -237,7 +238,7 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: "#0B3D2C",
+    backgroundColor: JBS_THEME.colors.surface,
     padding: 22,
     borderRadius: 20,
   },
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
   productIconBox: {
     width: 85,
     height: 85,
-    backgroundColor: "#DCFCE7",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
@@ -257,20 +258,20 @@ const styles = StyleSheet.create({
   },
 
   productName: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 25,
     fontWeight: "bold",
   },
 
   description: {
-    color: "#D1FAE5",
+    color: JBS_THEME.colors.textSecondary,
     fontSize: 16,
     lineHeight: 23,
     marginTop: 10,
   },
 
   price: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 30,
     fontWeight: "bold",
     marginTop: 20,
@@ -283,7 +284,7 @@ const styles = StyleSheet.create({
   },
 
   discountBox: {
-    backgroundColor: "#14532D",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 10,
@@ -292,13 +293,13 @@ const styles = StyleSheet.create({
   },
 
   discount: {
-    color: "#4ADE80",
+    color: JBS_THEME.colors.primarySoft,
     fontSize: 15,
     fontWeight: "bold",
   },
 
   coinBox: {
-    backgroundColor: "#713F12",
+    backgroundColor: JBS_THEME.colors.surfaceElevated,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 10,
@@ -306,19 +307,19 @@ const styles = StyleSheet.create({
   },
 
   coin: {
-    color: "#FACC15",
+    color: JBS_THEME.colors.warning,
     fontSize: 15,
     fontWeight: "bold",
   },
 
   delivery: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 17,
     marginTop: 18,
   },
 
   stock: {
-    color: "#4ADE80",
+    color: JBS_THEME.colors.primarySoft,
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 10,
@@ -334,7 +335,7 @@ const styles = StyleSheet.create({
   },
 
   buyButton: {
-    backgroundColor: "#15803D",
+    backgroundColor: JBS_THEME.colors.primary,
     paddingVertical: 17,
     borderRadius: 13,
     alignItems: "center",
@@ -345,7 +346,7 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    color: "#FFFFFF",
+    color: JBS_THEME.colors.text,
     fontSize: 17,
     fontWeight: "bold",
   },
