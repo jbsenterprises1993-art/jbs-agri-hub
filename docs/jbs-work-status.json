@@ -1,0 +1,75 @@
+{
+  "generated_at": "2026-10-01",
+  "branch": "jbs/auto-development",
+  "pipeline": [
+    "Backup",
+    "Coding",
+    "Testing",
+    "Fixing",
+    "Retest",
+    "Ready",
+    "Release"
+  ],
+  "apps": [
+    [
+      "JBS Agri Hub",
+      "existing-source",
+      "Testing/Integration"
+    ],
+    [
+      "JBS Owner",
+      "new-source-foundation",
+      "Planned"
+    ],
+    [
+      "JBS Admin",
+      "new-source-foundation",
+      "Planned"
+    ],
+    [
+      "JBS Billing",
+      "new-source-foundation",
+      "Planned"
+    ],
+    [
+      "JBS Stock",
+      "new-source-foundation",
+      "Planned"
+    ],
+    [
+      "JBS Accounts",
+      "new-source-foundation",
+      "Planned"
+    ],
+    [
+      "JBS Attendance",
+      "new-source-foundation",
+      "Planned"
+    ],
+    [
+      "JBS Marketing",
+      "new-source-foundation",
+      "Planned"
+    ],
+    [
+      "JBS Delivery",
+      "new-source-foundation",
+      "Planned"
+    ],
+    [
+      "JBS Controller",
+      "new-source-foundation",
+      "Planned"
+    ],
+    [
+      "JBS Time Management",
+      "new-source-foundation",
+      "Planned"
+    ],
+    [
+      "JBS AI",
+      "new-source-foundation",
+      "Planned"
+    ]
+  ]
+}
