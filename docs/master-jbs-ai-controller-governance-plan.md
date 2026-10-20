@@ -13,19 +13,19 @@ The JBS Controller App is the top-level governance and orchestration control pla
 - Controller is the central place to register projects, define permissions, review proposed updates, track approvals, manage versions, and view security/backup status.
 - Owner App remains the business-owner interface; it is not a bypass around Controller's project registration and approval workflow.
 - A project or new capability must not be exposed in Owner App until Controller approval is recorded by the trusted backend.
-- Work may advance to the next stage only after the required Owner authorization is independently verified by the backend.
-- For production releases and high-impact actions, both approvals and a release-specific approval must be recorded; AI cannot self-approve.
+- **JBS AI update exception:** updates specifically to the Controller App’s JBS AI (including its approved model/tool versions, capabilities, prompts, and non-spending configuration) require Controller approval only; a second Owner approval is not required for that JBS AI update workflow. The trusted backend must record and enforce the Controller approval.
+- Other projects and app capabilities continue to follow their separate approval gates. JBS AI cannot self-approve its own update.
 - This is a governance design decision, not a claim that the live app already implements it. Existing app code must be inspected and tested before rollout.
 
 ## Non-negotiable approval gates
 1. Discovering a tool or preparing a proposal does not grant it access.
 2. New provider, AI model, automation, security tool, robot, device, or integration is first recorded as a proposal in Controller.
 3. Controller approval is required before a proposal is made visible/available in Owner App.
-4. Owner authorization is separately required before implementation, privileged access, production changes, purchases, deployments, or moving to the next project stage.
+4. For ordinary JBS AI updates, Controller approval is sufficient; do not require a duplicate Owner approval. For other projects and capabilities, Owner authorization remains required before privileged access or the next stage where the workflow specifies it.
 5. The backend enforces both approvals. Hiding UI buttons is not authorization.
 6. AI may research, summarize, draft, run approved tests, and recommend changes; it cannot approve its own work, grant itself permissions, or release to production.
-7. Paid services, credits, subscriptions, hardware purchases, and cloud spend require explicit Owner approval.
-8. Production changes follow: Backup → Inspect → Isolated Branch/Workspace → Test → Review Diff → Owner Approval → Release → Verify/Rollback Plan.
+7. Paid services, credits, subscriptions, hardware purchases, and cloud spend still require explicit Owner approval, even when related to a JBS AI update.
+8. JBS AI updates follow: Backup → Inspect → Isolated Branch/Workspace → Test → Review Diff → Controller Approval → Release → Verify/Rollback Plan. Owner approval remains necessary for spending and for high-impact actions outside this JBS AI update exception.
 
 ## Controller modules
 - Master JBS AI Registry: provider/model/tool name, version, capabilities, cost/free tier, data handling, permissions, source links, compatibility, status, risk review, and rollback version.
@@ -48,7 +48,7 @@ This means a modular, expandable catalog and integration framework—not a claim
 - Capability catalog with category, vendor, model/tool/version, official documentation, supported API/protocol, status, costs, data access, risk level, and compatibility.
 - Pluggable, versioned adapters so new tools can be added without rewriting the whole Controller App.
 - Discovery can suggest candidates, but must never silently install, connect, grant permissions, spend money, or deploy.
-- Every new capability follows: Discover → Evaluate → Sandbox → Controller Approval → Owner Permission → Test → Release Approval → Monitor → Rollback if needed.
+- Every new capability follows: Discover → Evaluate → Sandbox → Controller Approval → Owner Permission → Test → Release Approval → Monitor → Rollback if needed. Exception: updates to JBS AI itself require Controller approval only, except Owner approval is still required for paid spend.
 - Keep a clear status for each integration: proposed, under review, sandbox, approved, enabled, paused, deprecated, or rejected.
 - Use least-privilege, scoped credentials stored only in a secure backend secret manager; revoke access when disabled.
 - Keep provider outages or model changes from disabling core Controller functions; provide health checks, version pinning where possible, and fallback/rollback paths.
@@ -64,7 +64,7 @@ No system can guarantee integration with literally every tool in the world. Some
 - In the JBS Owner App, the user-facing AI name must be exactly **Owner AI**. Do not label it “JBS AI” in the Owner App UI.
 - In the JBS Controller App, the user-facing AI name must be **JBS AI**. This is the full controller-level AI for the JBS ecosystem, responsible for coordinating approved tools, project registry, permission/approval workflows, security monitoring, master documents, backups, updates, and integrations.
 - “JBS AI” is the Controller App’s full controller AI; “Owner AI” is the Owner App’s assistant for owner-facing business workflows. They may use shared approved backend services, but their roles, permissions, and visible names must remain distinct.
-- JBS AI may propose and prepare changes but cannot approve its own proposal or bypass Controller Approval + Owner Permission + required release approval.
+- JBS AI may prepare an update but cannot approve its own update. A JBS AI update needs Controller approval only; it does not need a second Owner approval. Paid spend still needs Owner approval.
 - Owner AI cannot grant itself controller privileges or bypass Controller governance.
 - This naming rule applies to UI labels, navigation, assistant greetings, notifications, and documentation. Existing app code must be inspected before implementing changes.
 
@@ -84,8 +84,8 @@ No system can guarantee integration with literally every tool in the world. Some
 4. Run in isolated sandbox with sample/non-production data.
 5. Scan dependencies and inspect proposed changes.
 6. Controller approval.
-7. Owner authorization for access, spending, or next stage.
-8. Test, record results, take backup, and require release approval.
+7. For JBS AI updates, Controller approval is the only approval gate; Owner approval is still required for spending. For other integrations, follow their normal Owner authorization gates.
+8. Test, record results, take backup, and require Controller release approval for JBS AI updates.
 9. Deploy only after approval; verify health and keep rollback ready.
 10. Record version, changes, test evidence, approver, and date.
 
