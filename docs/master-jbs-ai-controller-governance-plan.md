@@ -37,6 +37,27 @@ The JBS Controller App is the top-level governance and orchestration control pla
 - Robotics/IoT Integration Catalog: device type, vendor, firmware, safety requirements, permissions, network boundary, simulator/test results, emergency stop and manual override requirements.
 - Update Center: new tool discovery, compatibility checks, dependency/security scan, sandbox evaluation, cost review, release notes, and rollback.
 
+
+## Global Advanced Technology Integration Vision
+
+The long-term ambition is for JBS Controller App to be the single governed control plane for evaluating and coordinating advanced technologies available worldwide that are relevant to JBS: AI models and agents, coding/developer tools, cybersecurity, data/analytics, business automation, cloud services, robotics, IoT, computer vision, voice interfaces, and future technology categories.
+
+This means a modular, expandable catalog and integration framework—not a claim that every global AI system is already connected or that every system can be integrated. Each external system must have a supported interface/API, acceptable licensing and terms, documented data handling, technical compatibility, and a reviewed security/safety profile.
+
+### Future-proof integration requirements
+- Capability catalog with category, vendor, model/tool/version, official documentation, supported API/protocol, status, costs, data access, risk level, and compatibility.
+- Pluggable, versioned adapters so new tools can be added without rewriting the whole Controller App.
+- Discovery can suggest candidates, but must never silently install, connect, grant permissions, spend money, or deploy.
+- Every new capability follows: Discover → Evaluate → Sandbox → Controller Approval → Owner Permission → Test → Release Approval → Monitor → Rollback if needed.
+- Keep a clear status for each integration: proposed, under review, sandbox, approved, enabled, paused, deprecated, or rejected.
+- Use least-privilege, scoped credentials stored only in a secure backend secret manager; revoke access when disabled.
+- Keep provider outages or model changes from disabling core Controller functions; provide health checks, version pinning where possible, and fallback/rollback paths.
+- For robotics and physical devices, require simulation, hardware safety checks, emergency stop, manual override, and explicit per-device authorization.
+- Keep JBS Coin, approved app-specific colors, existing business workflows, and data ownership intact unless the Owner explicitly approves a change.
+
+### Scope honesty
+No system can guarantee integration with literally every tool in the world. Some providers have no API, restricted access, incompatible licensing, regional limits, or unsafe behavior. Controller should show these limitations clearly and integrate only compatible, reviewed systems. The registry and adapter architecture should be designed to grow as technologies evolve.
+
 ## Security requirements
 - Server-side identity and role authorization; trusted Owner permissions cannot be set by the client.
 - Least privilege, MFA/re-authentication for sensitive actions, short-lived sessions where supported, and revocation.
