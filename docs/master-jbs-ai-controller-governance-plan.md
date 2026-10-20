@@ -5,6 +5,18 @@ Status: PLANNED — documentation only. This file does not implement or deploy a
 ## Goal
 Make the JBS Controller App the governed control center for Master JBS AI, approved AI providers/tools, security capabilities, robotics/IoT integrations, project documents, version history, and backup/restore workflows.
 
+
+## JBS Ecosystem Head Controller — hierarchy decision
+
+The JBS Controller App is the top-level governance and orchestration control plane for the entire JBS ecosystem. This includes JBS Owner App, JBS Agri Hub, all business/operations apps, Master JBS AI, security systems, document vault, backup/restore, future AI tools, automation, robotics, and IoT integrations.
+
+- Controller is the central place to register projects, define permissions, review proposed updates, track approvals, manage versions, and view security/backup status.
+- Owner App remains the business-owner interface; it is not a bypass around Controller's project registration and approval workflow.
+- A project or new capability must not be exposed in Owner App until Controller approval is recorded by the trusted backend.
+- Work may advance to the next stage only after the required Owner authorization is independently verified by the backend.
+- For production releases and high-impact actions, both approvals and a release-specific approval must be recorded; AI cannot self-approve.
+- This is a governance design decision, not a claim that the live app already implements it. Existing app code must be inspected and tested before rollout.
+
 ## Non-negotiable approval gates
 1. Discovering a tool or preparing a proposal does not grant it access.
 2. New provider, AI model, automation, security tool, robot, device, or integration is first recorded as a proposal in Controller.
