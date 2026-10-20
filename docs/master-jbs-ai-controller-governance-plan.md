@@ -58,6 +58,16 @@ This means a modular, expandable catalog and integration framework—not a claim
 ### Scope honesty
 No system can guarantee integration with literally every tool in the world. Some providers have no API, restricted access, incompatible licensing, regional limits, or unsafe behavior. Controller should show these limitations clearly and integrate only compatible, reviewed systems. The registry and adapter architecture should be designed to grow as technologies evolve.
 
+
+## AI Naming and Responsibility Boundary
+
+- In the JBS Owner App, the user-facing AI name must be exactly **Owner AI**. Do not label it “JBS AI” in the Owner App UI.
+- In the JBS Controller App, the user-facing AI name must be **JBS AI**. This is the full controller-level AI for the JBS ecosystem, responsible for coordinating approved tools, project registry, permission/approval workflows, security monitoring, master documents, backups, updates, and integrations.
+- “JBS AI” is the Controller App’s full controller AI; “Owner AI” is the Owner App’s assistant for owner-facing business workflows. They may use shared approved backend services, but their roles, permissions, and visible names must remain distinct.
+- JBS AI may propose and prepare changes but cannot approve its own proposal or bypass Controller Approval + Owner Permission + required release approval.
+- Owner AI cannot grant itself controller privileges or bypass Controller governance.
+- This naming rule applies to UI labels, navigation, assistant greetings, notifications, and documentation. Existing app code must be inspected before implementing changes.
+
 ## Security requirements
 - Server-side identity and role authorization; trusted Owner permissions cannot be set by the client.
 - Least privilege, MFA/re-authentication for sensitive actions, short-lived sessions where supported, and revocation.
