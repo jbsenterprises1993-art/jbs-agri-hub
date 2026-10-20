@@ -38,6 +38,21 @@ The JBS Controller App is the top-level governance and orchestration control pla
 - Update Center: new tool discovery, compatibility checks, dependency/security scan, sandbox evaluation, cost review, release notes, and rollback.
 
 
+## One JBS AI Control Plane for Every Current and Future JBS App
+
+**Architecture decision:** JBS AI, shown only inside the JBS Controller App, is the central AI control and governance interface for the entire JBS ecosystem. Every existing JBS app and every future app added to the ecosystem must be registered with and governed through this Controller/JBS AI control plane.
+
+- Maintain a central app registry for every app: owner/team, purpose, environment, version, status, connected services, data categories, permissions, dependencies, health, backup status, and release history.
+- JBS AI/Controller manages app-level settings, approved integrations, access policies, feature/update proposals, security alerts, release tracking, backups, and recovery workflows through authenticated backend services.
+- A newly added app must be registered in Controller before being enabled as a managed JBS app. Its integration must use a supported API or approved backend adapter; do not assume JBS AI can control an app that has no compatible interface.
+- Enforce least-privilege, per-app and per-action permissions on the backend. JBS AI must not receive unrestricted access to every system by default; grant only the scoped capabilities approved for each app.
+- The Controller App is the single management console, but each app may retain its own runtime, database, and required local safety controls. A Controller outage must not disable critical local safety protections.
+- Keep an audit trail of who/what requested an action, target app, requested permission, approval, result, and rollback reference.
+- **JBS AI update rule:** updates to JBS AI itself require Controller approval only (no duplicate Owner approval); JBS AI cannot approve its own update. Owner approval is still required for paid subscriptions, credits, hardware, or cloud spending.
+- For other app changes, privileged actions, deployments, or high-impact operations, use the relevant app's established approval policy; do not silently apply the JBS AI-only exception to all apps.
+- Keep the Owner App assistant named exactly **Owner AI**. Do not expose the label **JBS AI** as the Owner App assistant. The full controller-level **JBS AI** appears in the JBS Controller App only.
+- This is the required architecture, not a claim of existing live functionality. Implementation must start by locating and inspecting each real app/backend, then build and test the central registry and server-enforced controls.
+
 ## Global Advanced Technology Integration Vision
 
 The long-term ambition is for JBS Controller App to be the single governed control plane for evaluating and coordinating advanced technologies available worldwide that are relevant to JBS: AI models and agents, coding/developer tools, cybersecurity, data/analytics, business automation, cloud services, robotics, IoT, computer vision, voice interfaces, and future technology categories.
